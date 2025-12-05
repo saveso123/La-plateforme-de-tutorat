@@ -1,0 +1,191 @@
+@{
+    ViewBag.Title = "Accueil";
+}
+
+<div class="jumbotron bg-light p-5 rounded-3 mb-4">
+    <h1 class="display-4">Bienvenue sur Thot Platform</h1>
+    <p class="lead">Votre plateforme de tutorat et d'apprentissage en ligne</p>
+    <hr class="my-4">
+    <p>Accedez a des tuteurs qualifies et a des cours de qualite dans tous les domaines scientifiques.</p>
+    <div class="d-flex gap-2">
+        @if (Session["UserId"] == null)
+        {
+            <a class="btn btn-primary btn-lg" href="@Url.Action("Register", "Account")" role="button">Commencer maintenant</a>
+            <a class="btn btn-outline-secondary btn-lg" href="@Url.Action("Login", "Account")" role="button">Se connecter</a>
+        }
+        else
+        {
+            <a class="btn btn-primary btn-lg" href="@Url.Action("Index", "Cours")" role="button">Explorer les cours</a>
+            if (Session["UserType"]?.ToString() == "Etudiant")
+            {
+                <a class="btn btn-outline-secondary btn-lg" href="@Url.Action("Create", "Question")" role="button">Poser une question</a>
+            }
+            else
+            {
+                <a class="btn btn-outline-secondary btn-lg" href="@Url.Action("QuestionsEnAttente", "Tuteur")" role="button">Repondre aux questions</a>
+            }
+        }
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="display-1 text-primary mb-3"></div>
+                <h3 class="card-title">Tutorat personnalise</h3>
+                <p class="card-text">Posez vos questions et obtenez des reponses de tuteurs qualifies sous 2 heures.</p>
+                <ul class="list-unstyled text-start">
+                    <li> Questions illimitees (abonnes)</li>
+                    <li> Reponse garantie sous 2h</li>
+                    <li> Sessions de clavardage</li>
+                    <li> Rencontres en personne</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="display-1 text-success mb-3"></div>
+                <h3 class="card-title">E-learning</h3>
+                <p class="card-text">Accedez a une bibliotheque complete de cours video et de ressources pedagogiques.</p>
+                <ul class="list-unstyled text-start">
+                    <li> Modules video interactifs</li>
+                    <li> Exercices et solutionnaires</li>
+                    <li> Quiz d'evaluation</li>
+                    <li> Suivi de progression</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="display-1 text-warning mb-3">*</div>
+                <h3 class="card-title">Tuteurs experts</h3>
+                <p class="card-text">Nos tuteurs sont selectionnes et employes par Interface Interactive.</p>
+                <ul class="list-unstyled text-start">
+                    <li> Tuteurs qualifies</li>
+                    <li> Expertise verifiee</li>
+                    <li> Evaluations des etudiants</li>
+                    <li> Disponibilite garantie</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4">Domaines d'expertise</h2>
+        <div class="row g-3">
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="card text-center p-3">
+                    <div class="h1"></div>
+                    <h6>Mathematiques</h6>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="card text-center p-3">
+                    <div class="h1"></div>
+                    <h6>Physique</h6>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="card text-center p-3">
+                    <div class="h1"></div>
+                    <h6>Chimie</h6>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="card text-center p-3">
+                    <div class="h1"></div>
+                    <h6>Informatique</h6>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="card text-center p-3">
+                    <div class="h1"></div>
+                    <h6>Electronique</h6>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="card text-center p-3">
+                    <div class="h1"></div>
+                    <h6>Biologie</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4">Tarification</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4>Abonnement mensuel</h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-4">17,99$</h2>
+                        <p class="text-muted">par mois</p>
+                        <ul class="list-unstyled">
+                            <li> Questions illimitees</li>
+                            <li> Reponse sous 2h</li>
+                            <li> Sessions clavardage</li>
+                            <li> Acces FAQ complete</li>
+                            <li> Tarif preferentiel rencontres</li>
+                        </ul>
+                        <a href="@Url.Action("Register", "Account")" class="btn btn-primary btn-lg w-100">S'abonner</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white text-center">
+                        <h4>Base ponctuelle</h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-4">2,00$</h2>
+                        <p class="text-muted">par question</p>
+                        <ul class="list-unstyled">
+                            <li> Une question</li>
+                            <li> Reponse sous 2h</li>
+                            <li> Acces FAQ</li>
+                            <li>&nbsp;</li>
+                            <li>&nbsp;</li>
+                        </ul>
+                        <a href="@Url.Action("Register", "Account")" class="btn btn-secondary btn-lg w-100">Essayer</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-success text-white text-center">
+                        <h4>Session immediate</h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-4">5,00$</h2>
+                        <p class="text-muted">par heure</p>
+                        <ul class="list-unstyled">
+                            <li> Session 1 heure</li>
+                            <li> Connexion immediate</li>
+                            <li> Clavardage en direct</li>
+                            <li> Tuteur dedie</li>
+                            <li>&nbsp;</li>
+                        </ul>
+                        <a href="@Url.Action("Register", "Account")" class="btn btn-success btn-lg w-100">Demarrer</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

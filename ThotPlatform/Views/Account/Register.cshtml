@@ -1,0 +1,121 @@
+@model ThotPlatform.ViewModels.RegisterViewModel
+
+@{
+    ViewBag.Title = "Inscription";
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour a l'accueil
+    </a>
+</div>
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8 col-lg-7">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0"> Inscription tudiant</h3>
+            </div>
+            <div class="card-body p-4">
+                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+                {
+                    @Html.AntiForgeryToken()
+                    
+                    <div class="form-text mb-4">
+                        Crez votre compte pour accder  la plateforme Thot
+                    </div>
+
+                    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.Prenom, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Prenom, new { @class = "form-control", placeholder = "Jean" })
+                            @Html.ValidationMessageFor(m => m.Prenom, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.Nom, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Nom, new { @class = "form-control", placeholder = "Tremblay" })
+                            @Html.ValidationMessageFor(m => m.Nom, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "jean.tremblay@example.com", type = "email" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.Username, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "jean.tremblay" })
+                            @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.Telephone, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Telephone, new { @class = "form-control", placeholder = "514-555-0000", type = "tel" })
+                            @Html.ValidationMessageFor(m => m.Telephone, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Minimum 6 caractres" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label" })
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirmez le mot de passe" })
+                            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.Niveau, new { @class = "form-label" })
+                            @Html.DropDownListFor(m => m.Niveau, 
+                                new SelectList(Enum.GetValues(typeof(ThotPlatform.Models.NiveauScolaire))), 
+                                "Selectionnez votre niveau", 
+                                new { @class = "form-select" })
+                            @Html.ValidationMessageFor(m => m.Niveau, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.Ville, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Ville, new { @class = "form-control", placeholder = "Montreal" })
+                            @Html.ValidationMessageFor(m => m.Ville, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        @Html.LabelFor(m => m.Etablissement, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Etablissement, new { @class = "form-control", placeholder = "Nom de votre tablissement" })
+                        @Html.ValidationMessageFor(m => m.Etablissement, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-person-plus"></i> Crer mon compte
+                        </button>
+                    </div>
+                }
+            </div>
+            <div class="card-footer text-center">
+                <p class="mb-0">
+                    Vous avez dj un compte ? 
+                    <a href="@Url.Action("Login", "Account")" class="fw-bold">Connectez-vous ici</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

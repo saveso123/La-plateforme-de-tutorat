@@ -1,0 +1,377 @@
+@model ThotPlatform.Models.Module
+
+@{
+    ViewBag.Title = Model.Titre;
+    var isTuteur = Session["UserType"]?.ToString() == "Tuteur";
+    var isEtudiant = Session["UserType"]?.ToString() == "Etudiant";
+}
+
+<style>
+    .module-details-container {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        padding: 40px 0;
+    }
+
+    .module-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .module-header h1 {
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .module-badge {
+        background: rgba(255,255,255,0.2);
+        padding: 8px 20px;
+        border-radius: 20px;
+        display: inline-block;
+        margin-right: 10px;
+        backdrop-filter: blur(10px);
+    }
+
+    .content-card {
+        background: white;
+        border-radius: 0 0 20px 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .video-section {
+        padding: 30px;
+        background: #f8f9fa;
+    }
+
+    .video-player {
+        width: 100%;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        margin-bottom: 20px;
+    }
+
+    .video-tabs {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .video-tab {
+        flex: 1;
+        padding: 15px;
+        background: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+    }
+
+    .video-tab:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+    }
+
+    .video-tab.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: #667eea;
+    }
+
+    .content-section {
+        padding: 40px;
+    }
+
+    .description-box {
+        background: #f8f9ff;
+        padding: 25px;
+        border-radius: 15px;
+        border-left: 5px solid #667eea;
+        margin-bottom: 30px;
+    }
+
+    .ressources-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .ressource-item {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        border: 2px solid #e0e0e0;
+        transition: all 0.3s;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .ressource-item:hover {
+        border-color: #667eea;
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .ressource-icon {
+        font-size: 2rem;
+        margin-right: 15px;
+        color: #667eea;
+    }
+
+    .btn-complete {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        border: none;
+        padding: 15px 30px;
+        font-weight: 600;
+        border-radius: 50px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
+        transition: all 0.3s;
+    }
+
+    .btn-complete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(17, 153, 142, 0.6);
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border: none;
+        padding: 12px 25px;
+        font-weight: 600;
+        border-radius: 50px;
+        color: white;
+    }
+
+    .completed-badge {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+        padding: 10px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+</style>
+
+<div class="module-details-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <!-- Header -->
+                <div class="module-header">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h1><i class="bi bi-play-circle-fill"></i> @Model.Titre</h1>
+                            <div class="mb-3">
+                                <span class="module-badge">
+                                    <i class="bi bi-book"></i> Module @Model.Ordre
+                                </span>
+                                <span class="module-badge">
+                                    <i class="bi bi-clock"></i> @Model.DureeMinutes min
+                                </span>
+                                @if (Model.EstPublie)
+                                {
+                                    <span class="module-badge">
+                                        <i class="bi bi-check-circle"></i> Publie
+                                    </span>
+                                }
+                            </div>
+                            <p class="mb-0">@Model.Cours.Nom</p>
+                        </div>
+                        @if (isTuteur)
+                        {
+                            <div class="action-buttons">
+                                <a href="@Url.Action("Edit", new { id = Model.ModuleId })" class="btn btn-edit">
+                                    <i class="bi bi-pencil"></i> Modifier le module
+                                </a>
+                                <a href="@Url.Action("Delete", new { id = Model.ModuleId })" class="btn btn-danger" onclick="return confirm('etes-vous sur de vouloir supprimer ce module ?');">
+                                    <i class="bi bi-trash"></i> Supprimer
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <!-- Videos -->
+                    @if (!string.IsNullOrEmpty(Model.VideoTheorique) || !string.IsNullOrEmpty(Model.VideoDemonstrative))
+                    {
+                        <div class="video-section">
+                            <h3 class="mb-4"><i class="bi bi-camera-video text-danger"></i> Videos du Module</h3>
+                            
+                            <div class="video-tabs">
+                                @if (!string.IsNullOrEmpty(Model.VideoTheorique))
+                                {
+                                    <div class="video-tab active" onclick="switchVideo('theorique')">
+                                        <i class="bi bi-book"></i>
+                                        <div><strong>Video Theorique</strong></div>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.VideoDemonstrative))
+                                {
+                                    <div class="video-tab @(string.IsNullOrEmpty(Model.VideoTheorique) ? "active" : "")" onclick="switchVideo('demonstrative')">
+                                        <i class="bi bi-play-circle"></i>
+                                        <div><strong>Video Demonstrative</strong></div>
+                                    </div>
+                                }
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.VideoTheorique))
+                            {
+                                <video id="video-theorique" class="video-player" controls>
+                                    <source src="@Url.Content(Model.VideoTheorique)" type="video/mp4">
+                                    Votre navigateur ne supporte pas la lecture de videos.
+                                </video>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.VideoDemonstrative))
+                            {
+                                <video id="video-demonstrative" class="video-player" style="display:@(string.IsNullOrEmpty(Model.VideoTheorique) ? "block" : "none")" controls>
+                                    <source src="@Url.Content(Model.VideoDemonstrative)" type="video/mp4">
+                                    Votre navigateur ne supporte pas la lecture de videos.
+                                </video>
+                            }
+                        </div>
+                    }
+
+                    <!-- Contenu -->
+                    <div class="content-section">
+                        @if (!string.IsNullOrEmpty(Model.Description))
+                        {
+                            <div class="description-box">
+                                <h4><i class="bi bi-info-circle text-primary"></i> Description</h4>
+                                <p class="mb-0">@Model.Description</p>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.ContenuTexte))
+                        {
+                            <div class="mb-4">
+                                <h4><i class="bi bi-file-text text-success"></i> Contenu du Module</h4>
+                                <hr>
+                                <div class="content-html">
+                                    @Html.Raw(Model.ContenuTexte)
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Ressources -->
+                        @if (Model.Ressources != null && Model.Ressources.Any())
+                        {
+                            <div class="mb-4">
+                                <h4><i class="bi bi-folder text-warning"></i> Ressources Telechargeables</h4>
+                                <hr>
+                                <ul class="ressources-list">
+                                    @foreach (var ressource in Model.Ressources)
+                                    {
+                                        <li class="ressource-item">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-file-earmark-pdf ressource-icon"></i>
+                                                <div>
+                                                    <strong>@ressource.Titre</strong>
+                                                    <div class="text-muted small">@ressource.Type.ToString()</div>
+                                                </div>
+                                            </div>
+                                            <a href="@Url.Action("DownloadRessource", new { id = ressource.RessourceModuleId })" class="btn btn-sm btn-primary">
+                                                <i class="bi bi-download"></i> Telecharger
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        <!-- Quiz du module -->
+                        @{
+                            var quizCount = Model.Quiz != null ? Model.Quiz.Count(q => q.EstPublie) : 0;
+                        }
+                        @if (quizCount > 0)
+                        {
+                            <div class="text-center mt-4">
+                                <a href="@Url.Action("QuizModule", "Etudiant", new { moduleId = Model.ModuleId, coursId = Model.CoursId })" class="btn btn-warning btn-lg">
+                                    <i class="bi bi-question-circle"></i> Voir les Quiz du Module (@quizCount)
+                                </a>
+                            </div>
+                        }
+
+                        <!-- Actions etudiant -->
+                        @if (isEtudiant)
+                        {
+                            <div class="text-center mt-5">
+                                <button onclick="marquerComplete(@Model.ModuleId)" class="btn btn-complete btn-lg">
+                                    <i class="bi bi-check-circle"></i> Marquer comme Complete
+                                </button>
+                            </div>
+                        }
+
+                        <!-- Retour -->
+                        <div class="text-center mt-4">
+                            @if (isTuteur)
+                            {
+                                <a href="@Url.Action("DetailsCours", "Tuteur", new { id = Model.CoursId })" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left"></i> Retour au Cours
+                                </a>
+                            }
+                            else if (isEtudiant)
+                            {
+                                <a href="@Url.Action("VoirCours", "Etudiant", new { id = Model.CoursId })" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left"></i> Retour au Cours
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function switchVideo(type) {
+            // Cacher toutes les videos
+            document.querySelectorAll('.video-player').forEach(v => v.style.display = 'none');
+            document.querySelectorAll('.video-tab').forEach(t => t.classList.remove('active'));
+
+            // Afficher la video selectionnee
+            const video = document.getElementById('video-' + type);
+            if (video) {
+                video.style.display = 'block';
+                event.currentTarget.classList.add('active');
+            }
+        }
+
+        function marquerComplete(moduleId) {
+            if (confirm('Marquer ce module comme complete ?')) {
+                $.ajax({
+                    url: '@Url.Action("MarquerComplete", "Module")',
+                    type: 'POST',
+                    data: { moduleId: moduleId },
+                    success: function (result) {
+                        if (result.success) {
+                            alert('Module marque comme complete ! Progression : ' + result.progression + '%');
+                            location.reload();
+                        } else {
+                            alert('Erreur : ' + result.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Erreur lors de la mise a jour');
+                    }
+                });
+            }
+        }
+    </script>
+}
+

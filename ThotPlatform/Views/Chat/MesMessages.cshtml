@@ -1,0 +1,89 @@
+﻿@model List<ThotPlatform.Models.Message>
+
+@{
+    ViewBag.Title = "Mes Messages";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2><i class="bi bi-chat-dots"></i> Mes Messages</h2>
+            <hr />
+
+            @if (Model == null || Model.Count == 0)
+            {
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> Aucun message pour le moment.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>De/Vers</th>
+                                <th>Sujet</th>
+                                <th>Date</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var message in Model)
+                            {
+                                var estRecu = message.DestinatireId == (int)Session["UserId"];
+                                var auteur = estRecu ? message.Expediteur : message.Destinataire;
+                                
+                                <tr class="@(estRecu && !message.EstLu ? "table-warning" : "")">
+                                    <td>
+                                        <strong>@auteur?.NomComplet</strong>
+                                        <br />
+                                        <small class="text-muted">@(estRecu ? "Recu" : "Envoye")</small>
+                                    </td>
+                                    <td>@message.Sujet</td>
+                                    <td>@message.DateEnvoi.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>
+                                        @if (estRecu && !message.EstLu)
+                                        {
+                                            <span class="badge bg-warning">Non lu</span>
+                                        }
+                                        else if (estRecu && message.EstLu)
+                                        {
+                                            <span class="badge bg-success">Lu</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Envoye</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("Lire", "Message", new { id = message.MessageId })" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-eye"></i> Lire
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            <div class="mt-3">
+                <a href="@Url.Action("Nouveau", "Message")" class="btn btn-success">
+                    <i class="bi bi-pencil-square"></i> Nouveau Message
+                </a>
+                <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table-hover tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+</style>

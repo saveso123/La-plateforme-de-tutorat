@@ -1,0 +1,84 @@
+@model ThotPlatform.Models.Question
+
+@{
+    ViewBag.Title = "Poser une question";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"> Poser une question</h3>
+            </div>
+            <div class="card-body p-4">
+                @using (Html.BeginForm("Create", "Question", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation" }))
+                {
+                    @Html.AntiForgeryToken()
+                    
+                    <div class="alert alert-info">
+                        <strong>Conseil :</strong> Soyez precis dans votre question pour obtenir une reponse de qualite.
+                        @if (Session["UserType"]?.ToString() == "Etudiant")
+                        {
+                            var userId = (int)Session["UserId"];
+                            var etudiant = new ThotPlatform.Models.ThotDbContext().Etudiants.Find(userId);
+                            if (etudiant != null && !etudiant.AbonnementActif)
+                            {
+                                <text><br /><strong>Non-abonne :</strong> Cette question vous coutera 2$.</text>
+                            }
+                        }
+                    </div>
+
+                    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.DomaineId, "Domaine", new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.DomaineId, (SelectList)ViewBag.Domaines, "Selectionnez un domaine", new { @class = "form-select" })
+                        @Html.ValidationMessageFor(m => m.DomaineId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Titre, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Titre, new { @class = "form-control", placeholder = "Ex: Comment resoudre une equation du second degre ?" })
+                        @Html.ValidationMessageFor(m => m.Titre, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Contenu, "Votre question detaillee", new { @class = "form-label" })
+                        @Html.TextAreaFor(m => m.Contenu, new { @class = "form-control", rows = 6, placeholder = "Decrivez votre question en detail..." })
+                        @Html.ValidationMessageFor(m => m.Contenu, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Fichier joint (optionnel)</label>
+                        <input type="file" name="fichier" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
+                        <div class="form-text">Formats acceptes : PDF, Word, Images (max 10 MB)</div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-send"></i> Envoyer ma question
+                        </button>
+                        <a href="@Url.Action("Index", "Question")" class="btn btn-outline-secondary">Annuler</a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-body">
+                <h6 class="card-title"> Garanties</h6>
+                <ul class="mb-0">
+                    <li>Reponse garantie sous 2 heures</li>
+                    <li>Tuteurs qualifies et verifies</li>
+                    <li>Reponses archivees dans la FAQ</li>
+                    <li> Possibilit de poser des questions de suivi</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

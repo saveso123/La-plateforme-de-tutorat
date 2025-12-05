@@ -1,0 +1,121 @@
+@model List<ThotPlatform.Models.Transaction>
+
+@{
+    ViewBag.Title = "Historique des paiements";
+}
+
+<div class="row mt-4">
+    <div class="col-12">
+        <h2> Historique des paiements</h2>
+        <p class="text-muted">Consultez l'historique de vos transactions</p>
+    </div>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">
+        <h5>Aucune transaction pour le moment</h5>
+        <p>Vos paiements apparatront ici.</p>
+    </div>
+}
+else
+{
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Montant</th>
+                            <th>Statut</th>
+                            <th>ID Transaction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var transaction in Model)
+                        {
+                            <tr>
+                                <td>@transaction.DateTransaction.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    @switch (transaction.Type)
+                                    {
+                                        case ThotPlatform.Models.TypeTransaction.AbonnementMensuel:
+                                            <span class="badge bg-warning">Abonnement</span>
+                                            break;
+                                        case ThotPlatform.Models.TypeTransaction.QuestionPonctuelle:
+                                            <span class="badge bg-info">Question</span>
+                                            break;
+                                        case ThotPlatform.Models.TypeTransaction.SessionImmediate:
+                                            <span class="badge bg-success">Session</span>
+                                            break;
+                                        case ThotPlatform.Models.TypeTransaction.RencontrePhysique:
+                                            <span class="badge bg-primary">Rencontre</span>
+                                            break;
+                                        case ThotPlatform.Models.TypeTransaction.Remboursement:
+                                            <span class="badge bg-danger">Remboursement</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>@transaction.Description</td>
+                                <td><strong>@transaction.Montant.ToString("C")</strong></td>
+                                <td>
+                                    @switch (transaction.Statut)
+                                    {
+                                        case ThotPlatform.Models.StatutTransaction.Completee:
+                                            <span class="badge bg-success"> Complte</span>
+                                            break;
+                                        case ThotPlatform.Models.StatutTransaction.EnAttente:
+                                            <span class="badge bg-warning"> En attente</span>
+                                            break;
+                                        case ThotPlatform.Models.StatutTransaction.Approuvee:
+                                            <span class="badge bg-info"> Approuve</span>
+                                            break;
+                                        case ThotPlatform.Models.StatutTransaction.Echouee:
+                                            <span class="badge bg-danger"> choue</span>
+                                            break;
+                                        case ThotPlatform.Models.StatutTransaction.Remboursee:
+                                            <span class="badge bg-secondary"> Rembourse</span>
+                                            break;
+                                        case ThotPlatform.Models.StatutTransaction.Annulee:
+                                            <span class="badge bg-secondary"> Annule</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    <small class="text-muted">@transaction.PayPalTransactionId</small>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h6> Total dpens</h6>
+                    <h4 class="text-primary">@Model.Where(t => t.Statut == ThotPlatform.Models.StatutTransaction.Completee).Sum(t => t.Montant).ToString("C")</h4>
+                </div>
+                <div class="col-md-4">
+                    <h6> Nombre de transactions</h6>
+                    <h4 class="text-success">@Model.Count</h4>
+                </div>
+                <div class="col-md-4">
+                    <h6> Transactions russies</h6>
+                    <h4 class="text-info">@Model.Count(t => t.Statut == ThotPlatform.Models.StatutTransaction.Completee)</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="text-center mt-4">
+    <a href="@Url.Action("Index", "Etudiant")" class="btn btn-outline-primary"> Retour au dashboard</a>
+</div>
+

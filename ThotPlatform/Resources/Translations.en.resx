@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  
+  <!-- Navigation -->
+  <data name="Nav_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Nav_Courses" xml:space="preserve">
+    <value>Courses</value>
+  </data>
+  <data name="Nav_Questions" xml:space="preserve">
+    <value>Questions</value>
+  </data>
+  <data name="Nav_Tutors" xml:space="preserve">
+    <value>Tutors</value>
+  </data>
+  <data name="Nav_Login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Nav_Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Nav_Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="Nav_MyProfile" xml:space="preserve">
+    <value>My Profile</value>
+  </data>
+  <data name="Nav_MyCourses" xml:space="preserve">
+    <value>My Courses</value>
+  </data>
+  
+  <!-- Login Page -->
+  <data name="Login_Title" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Login_Message" xml:space="preserve">
+    <value>Sign in to access your account</value>
+  </data>
+  <data name="Login_Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="Login_Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Login_RememberMe" xml:space="preserve">
+    <value>Remember me</value>
+  </data>
+  <data name="Login_Submit" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="Login_NoAccount" xml:space="preserve">
+    <value>Don't have an account?</value>
+  </data>
+  <data name="Login_RegisterHere" xml:space="preserve">
+    <value>Register here</value>
+  </data>
+  
+  <!-- Dashboard -->
+  <data name="Dashboard_Welcome" xml:space="preserve">
+    <value>Welcome</value>
+  </data>
+  <data name="Dashboard_Student" xml:space="preserve">
+    <value>Student Dashboard</value>
+  </data>
+  <data name="Dashboard_Tutor" xml:space="preserve">
+    <value>Tutor Dashboard</value>
+  </data>
+  
+  <!-- Common -->
+  <data name="Common_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Common_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Common_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Common_Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Common_View" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="Common_Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="Common_Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Common_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Common_Filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="Common_Loading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="Common_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Common_Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  
+  <!-- Register Page -->
+  <data name="Register_Title" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Register_Message" xml:space="preserve">
+    <value>Create your account to access the platform</value>
+  </data>
+  <data name="Register_FirstName" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="Register_LastName" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="Register_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Register_Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="Register_Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Register_ConfirmPassword" xml:space="preserve">
+    <value>Confirm Password</value>
+  </data>
+  <data name="Register_Phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="Register_SchoolLevel" xml:space="preserve">
+    <value>School Level</value>
+  </data>
+  <data name="Register_Submit" xml:space="preserve">
+    <value>Sign Up</value>
+  </data>
+  <data name="Register_AlreadyAccount" xml:space="preserve">
+    <value>Already have an account?</value>
+  </data>
+  <data name="Register_LoginHere" xml:space="preserve">
+    <value>Login here</value>
+  </data>
+  
+  <!-- Change Password -->
+  <data name="ChangePassword_Title" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="ChangePassword_Message" xml:space="preserve">
+    <value>You must change your password on first login</value>
+  </data>
+  <data name="ChangePassword_CurrentPassword" xml:space="preserve">
+    <value>Current Password</value>
+  </data>
+  <data name="ChangePassword_NewPassword" xml:space="preserve">
+    <value>New Password</value>
+  </data>
+  <data name="ChangePassword_ConfirmPassword" xml:space="preserve">
+    <value>Confirm New Password</value>
+  </data>
+  <data name="ChangePassword_Submit" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  
+  <!-- Questions/FAQ -->
+  <data name="Question_Title" xml:space="preserve">
+    <value>Questions and Answers</value>
+  </data>
+  <data name="Question_FAQ" xml:space="preserve">
+    <value>Frequently Asked Questions</value>
+  </data>
+  <data name="Question_AskQuestion" xml:space="preserve">
+    <value>Ask a Question</value>
+  </data>
+  <data name="Question_MyQuestions" xml:space="preserve">
+    <value>My Questions</value>
+  </data>
+  <data name="Question_Subject" xml:space="preserve">
+    <value>Subject</value>
+  </data>
+  <data name="Question_Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Question_Domain" xml:space="preserve">
+    <value>Domain</value>
+  </data>
+  <data name="Question_Attachment" xml:space="preserve">
+    <value>Attachment</value>
+  </data>
+  <data name="Question_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Question_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Question_Answered" xml:space="preserve">
+    <value>Answered</value>
+  </data>
+  <data name="Question_Closed" xml:space="preserve">
+    <value>Closed</value>
+  </data>
+  <data name="Question_Answer" xml:space="preserve">
+    <value>Answer</value>
+  </data>
+  <data name="Question_Answers" xml:space="preserve">
+    <value>Answers</value>
+  </data>
+  <data name="Question_NoAnswers" xml:space="preserve">
+    <value>No answers yet</value>
+  </data>
+  <data name="Question_AnswerPlaceholder" xml:space="preserve">
+    <value>Write your answer here...</value>
+  </data>
+  
+  <!-- Courses -->
+  <data name="Course_Title" xml:space="preserve">
+    <value>E-learning Courses</value>
+  </data>
+  <data name="Course_Catalog" xml:space="preserve">
+    <value>Course Catalog</value>
+  </data>
+  <data name="Course_MyCourses" xml:space="preserve">
+    <value>My Courses</value>
+  </data>
+  <data name="Course_CreateCourse" xml:space="preserve">
+    <value>Create Course</value>
+  </data>
+  <data name="Course_Name" xml:space="preserve">
+    <value>Course Name</value>
+  </data>
+  <data name="Course_Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Course_Level" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="Course_Duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="Course_Enroll" xml:space="preserve">
+    <value>Enroll</value>
+  </data>
+  <data name="Course_Enrolled" xml:space="preserve">
+    <value>Enrolled</value>
+  </data>
+  <data name="Course_Students" xml:space="preserve">
+    <value>Students</value>
+  </data>
+  <data name="Course_Modules" xml:space="preserve">
+    <value>Modules</value>
+  </data>
+  <data name="Course_Progress" xml:space="preserve">
+    <value>Progress</value>
+  </data>
+  <data name="Course_Resources" xml:space="preserve">
+    <value>Resources</value>
+  </data>
+  <data name="Course_Video" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="Course_Document" xml:space="preserve">
+    <value>Document</value>
+  </data>
+  <data name="Course_Quiz" xml:space="preserve">
+    <value>Quiz</value>
+  </data>
+  <data name="Course_StartQuiz" xml:space="preserve">
+    <value>Start Quiz</value>
+  </data>
+  <data name="Course_CompleteModule" xml:space="preserve">
+    <value>Complete Module</value>
+  </data>
+  
+  <!-- Payment -->
+  <data name="Payment_Title" xml:space="preserve">
+    <value>Payments</value>
+  </data>
+  <data name="Payment_Subscription" xml:space="preserve">
+    <value>Subscription</value>
+  </data>
+  <data name="Payment_Subscribe" xml:space="preserve">
+    <value>Subscribe</value>
+  </data>
+  <data name="Payment_MonthlyPrice" xml:space="preserve">
+    <value>$17.99 CAD / month</value>
+  </data>
+  <data name="Payment_ImmediateSession" xml:space="preserve">
+    <value>Immediate Session</value>
+  </data>
+  <data name="Payment_SessionPrice" xml:space="preserve">
+    <value>$5.00 CAD</value>
+  </data>
+  <data name="Payment_QuestionPrice" xml:space="preserve">
+    <value>$2.00 CAD</value>
+  </data>
+  <data name="Payment_History" xml:space="preserve">
+    <value>Payment History</value>
+  </data>
+  <data name="Payment_Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="Payment_Amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="Payment_Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Payment_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Payment_Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="Payment_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Payment_Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="Payment_PayWithPayPal" xml:space="preserve">
+    <value>Pay with PayPal</value>
+  </data>
+  <data name="Payment_Benefits" xml:space="preserve">
+    <value>Subscription Benefits</value>
+  </data>
+  <data name="Payment_UnlimitedQuestions" xml:space="preserve">
+    <value>Unlimited Questions</value>
+  </data>
+  <data name="Payment_GuaranteedResponse" xml:space="preserve">
+    <value>Guaranteed 2h Response</value>
+  </data>
+  <data name="Payment_AccessAllCourses" xml:space="preserve">
+    <value>Access to All Courses</value>
+  </data>
+  <data name="Payment_PrioritySupport" xml:space="preserve">
+    <value>Priority Support</value>
+  </data>
+  
+  <!-- Dashboard Student -->
+  <data name="Student_Dashboard" xml:space="preserve">
+    <value>Student Dashboard</value>
+  </data>
+  <data name="Student_Statistics" xml:space="preserve">
+    <value>Statistics</value>
+  </data>
+  <data name="Student_QuestionsAsked" xml:space="preserve">
+    <value>Questions Asked</value>
+  </data>
+  <data name="Student_CoursesEnrolled" xml:space="preserve">
+    <value>Courses Enrolled</value>
+  </data>
+  <data name="Student_SessionsCompleted" xml:space="preserve">
+    <value>Sessions Completed</value>
+  </data>
+  <data name="Student_RecentActivity" xml:space="preserve">
+    <value>Recent Activity</value>
+  </data>
+  <data name="Student_UpcomingSessions" xml:space="preserve">
+    <value>Upcoming Sessions</value>
+  </data>
+  
+  <!-- Dashboard Tutor -->
+  <data name="Tutor_Dashboard" xml:space="preserve">
+    <value>Tutor Dashboard</value>
+  </data>
+  <data name="Tutor_Statistics" xml:space="preserve">
+    <value>Statistics</value>
+  </data>
+  <data name="Tutor_QuestionsAnswered" xml:space="preserve">
+    <value>Questions Answered</value>
+  </data>
+  <data name="Tutor_CoursesCreated" xml:space="preserve">
+    <value>Courses Created</value>
+  </data>
+  <data name="Tutor_Students" xml:space="preserve">
+    <value>Students</value>
+  </data>
+  <data name="Tutor_Earnings" xml:space="preserve">
+    <value>Earnings</value>
+  </data>
+  <data name="Tutor_PendingQuestions" xml:space="preserve">
+    <value>Pending Questions</value>
+  </data>
+  <data name="Tutor_Domains" xml:space="preserve">
+    <value>Expertise Domains</value>
+  </data>
+  
+  <!-- Home Page -->
+  <data name="Home_Welcome" xml:space="preserve">
+    <value>Welcome to Thot</value>
+  </data>
+  <data name="Home_Subtitle" xml:space="preserve">
+    <value>Online Tutoring and E-learning Platform</value>
+  </data>
+  <data name="Home_GetStarted" xml:space="preserve">
+    <value>Get Started</value>
+  </data>
+  <data name="Home_LearnMore" xml:space="preserve">
+    <value>Learn More</value>
+  </data>
+  <data name="Home_Features" xml:space="preserve">
+    <value>Features</value>
+  </data>
+  <data name="Home_OnlineTutoring" xml:space="preserve">
+    <value>Online Tutoring</value>
+  </data>
+  <data name="Home_ELearning" xml:space="preserve">
+    <value>E-learning Courses</value>
+  </data>
+  <data name="Home_QA" xml:space="preserve">
+    <value>Questions & Answers</value>
+  </data>
+  <data name="Home_LiveSessions" xml:space="preserve">
+    <value>Live Sessions</value>
+  </data>
+  
+  <!-- Domains -->
+  <data name="Domain_Mathematics" xml:space="preserve">
+    <value>Mathematics</value>
+  </data>
+  <data name="Domain_Physics" xml:space="preserve">
+    <value>Physics</value>
+  </data>
+  <data name="Domain_Chemistry" xml:space="preserve">
+    <value>Chemistry</value>
+  </data>
+  <data name="Domain_ComputerScience" xml:space="preserve">
+    <value>Computer Science</value>
+  </data>
+  <data name="Domain_Electronics" xml:space="preserve">
+    <value>Electronics</value>
+  </data>
+  <data name="Domain_Biology" xml:space="preserve">
+    <value>Biology</value>
+  </data>
+  
+  <!-- School Levels -->
+  <data name="Level_Primary" xml:space="preserve">
+    <value>Primary</value>
+  </data>
+  <data name="Level_Secondary" xml:space="preserve">
+    <value>Secondary</value>
+  </data>
+  <data name="Level_College" xml:space="preserve">
+    <value>College</value>
+  </data>
+  
+  <!-- Validation Messages -->
+  <data name="Validation_Required" xml:space="preserve">
+    <value>This field is required</value>
+  </data>
+  <data name="Validation_EmailInvalid" xml:space="preserve">
+    <value>Invalid email address</value>
+  </data>
+  <data name="Validation_PasswordMismatch" xml:space="preserve">
+    <value>Passwords do not match</value>
+  </data>
+  <data name="Validation_PasswordTooShort" xml:space="preserve">
+    <value>Password must be at least 8 characters</value>
+  </data>
+  <data name="Validation_UsernameExists" xml:space="preserve">
+    <value>This username already exists</value>
+  </data>
+  
+  <!-- Success Messages -->
+  <data name="Success_RegistrationComplete" xml:space="preserve">
+    <value>Registration successful! You can now login.</value>
+  </data>
+  <data name="Success_PasswordChanged" xml:space="preserve">
+    <value>Password changed successfully</value>
+  </data>
+  <data name="Success_QuestionSubmitted" xml:space="preserve">
+    <value>Question submitted successfully</value>
+  </data>
+  <data name="Success_AnswerSubmitted" xml:space="preserve">
+    <value>Answer submitted successfully</value>
+  </data>
+  <data name="Success_CourseCreated" xml:space="preserve">
+    <value>Course created successfully</value>
+  </data>
+  <data name="Success_EnrolledInCourse" xml:space="preserve">
+    <value>Successfully enrolled in course</value>
+  </data>
+  <data name="Success_PaymentCompleted" xml:space="preserve">
+    <value>Payment completed successfully</value>
+  </data>
+  
+  <!-- Error Messages -->
+  <data name="Error_LoginFailed" xml:space="preserve">
+    <value>Invalid username or password</value>
+  </data>
+  <data name="Error_RegistrationFailed" xml:space="preserve">
+    <value>Registration error</value>
+  </data>
+  <data name="Error_FileUploadFailed" xml:space="preserve">
+    <value>File upload error</value>
+  </data>
+  <data name="Error_PaymentFailed" xml:space="preserve">
+    <value>Payment error</value>
+  </data>
+  <data name="Error_AccessDenied" xml:space="preserve">
+    <value>Access Denied</value>
+  </data>
+  <data name="Error_NotFound" xml:space="preserve">
+    <value>Page Not Found</value>
+  </data>
+  <data name="Error_ServerError" xml:space="preserve">
+    <value>Server Error</value>
+  </data>
+</root>

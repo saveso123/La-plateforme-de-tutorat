@@ -1,0 +1,296 @@
+@model ThotPlatform.Models.Module
+
+@{
+    ViewBag.Title = "Creer un Module";
+}
+
+<style>
+    .module-create-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 40px 0;
+    }
+
+    .create-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        overflow: hidden;
+        animation: slideUp 0.5s ease-out;
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+    }
+
+    .card-header-custom h2 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 2rem;
+    }
+
+    .card-header-custom p {
+        margin: 10px 0 0 0;
+        opacity: 0.9;
+    }
+
+    .form-section {
+        padding: 40px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-label i {
+        color: #667eea;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 12px 15px;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    .video-upload-box {
+        border: 3px dashed #667eea;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        background: #f8f9ff;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .video-upload-box:hover {
+        background: #eef1ff;
+        border-color: #764ba2;
+    }
+
+    .video-upload-box i {
+        font-size: 3rem;
+        color: #667eea;
+        margin-bottom: 15px;
+    }
+
+    .btn-create {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        color: white;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-create:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    .btn-cancel {
+        background: #6c757d;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        color: white;
+        transition: all 0.3s;
+    }
+
+    .btn-cancel:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+    }
+
+    .section-divider {
+        border: 0;
+        height: 2px;
+        background: linear-gradient(to right, transparent, #667eea, transparent);
+        margin: 30px 0;
+    }
+
+    .info-badge {
+        background: #e3f2fd;
+        color: #1976d2;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+</style>
+
+<div class="module-create-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="create-card">
+                    <div class="card-header-custom">
+                        <h2><i class="bi bi-plus-circle"></i> Creer un Nouveau Module</h2>
+                        <p>Cours : @ViewBag.CoursNom</p>
+                    </div>
+
+                    <div class="form-section">
+                        @using (Html.BeginForm("Create", "Module", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(m => m.CoursId)
+                            @Html.HiddenFor(m => m.Ordre)
+
+                            @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                            <div class="row">
+                                <!-- Informations de base -->
+                                <div class="col-md-12 mb-4">
+                                    <h4><i class="bi bi-info-circle text-primary"></i> Informations de Base</h4>
+                                    <hr class="section-divider">
+                                </div>
+
+                                <div class="col-md-8 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-card-heading"></i>
+                                        @Html.DisplayNameFor(m => m.Titre)
+                                    </label>
+                                    @Html.TextBoxFor(m => m.Titre, new { @class = "form-control", placeholder = "Ex: Introduction aux variables" })
+                                    @Html.ValidationMessageFor(m => m.Titre, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-clock"></i>
+                                        @Html.DisplayNameFor(m => m.DureeMinutes)
+                                    </label>
+                                    @Html.TextBoxFor(m => m.DureeMinutes, new { @class = "form-control", type = "number", min = "1", placeholder = "60" })
+                                    @Html.ValidationMessageFor(m => m.DureeMinutes, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-text-paragraph"></i>
+                                        @Html.DisplayNameFor(m => m.Description)
+                                    </label>
+                                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 4, placeholder = "Decrivez le contenu de ce module..." })
+                                    @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+                                </div>
+
+                                <!-- Videos -->
+                                <div class="col-md-12 mb-4 mt-4">
+                                    <h4><i class="bi bi-camera-video text-danger"></i> Videos du Module</h4>
+                                    <hr class="section-divider">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-book"></i>
+                                        Video Theorique
+                                    </label>
+                                    <div class="video-upload-box" onclick="document.getElementById('videoTheorique').click()">
+                                        <i class="bi bi-cloud-upload"></i>
+                                        <p class="mb-0"><strong>Cliquez pour uploader</strong></p>
+                                        <small class="text-muted">MP4, AVI, MOV (max 500MB)</small>
+                                        <input type="file" id="videoTheorique" name="videoTheorique" accept="video/*" style="display:none" onchange="updateFileName(this, 'theorique-name')">
+                                        <p id="theorique-name" class="mt-2 text-success" style="display:none"></p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-play-circle"></i>
+                                        Video Demonstrative
+                                    </label>
+                                    <div class="video-upload-box" onclick="document.getElementById('videoDemonstrative').click()">
+                                        <i class="bi bi-cloud-upload"></i>
+                                        <p class="mb-0"><strong>Cliquez pour uploader</strong></p>
+                                        <small class="text-muted">MP4, AVI, MOV (max 500MB)</small>
+                                        <input type="file" id="videoDemonstrative" name="videoDemonstrative" accept="video/*" style="display:none" onchange="updateFileName(this, 'demo-name')">
+                                        <p id="demo-name" class="mt-2 text-success" style="display:none"></p>
+                                    </div>
+                                </div>
+
+                                <!-- Contenu texte -->
+                                <div class="col-md-12 mb-4 mt-4">
+                                    <h4><i class="bi bi-file-text text-success"></i> Contenu Texte (Optionnel)</h4>
+                                    <hr class="section-divider">
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-file-richtext"></i>
+                                        Contenu HTML
+                                    </label>
+                                    @Html.TextAreaFor(m => m.ContenuTexte, new { @class = "form-control", rows = 8, placeholder = "Vous pouvez ajouter du contenu HTML ici..." })
+                                    <small class="text-muted">Supporte le HTML pour un formatage avance</small>
+                                </div>
+
+                                <!-- Publication -->
+                                <div class="col-md-12 mb-3">
+                                    <div class="form-check form-switch">
+                                        @Html.CheckBoxFor(m => m.EstPublie, new { @class = "form-check-input", id = "estPublie" })
+                                        <label class="form-check-label" for="estPublie">
+                                            <strong>Publier immediatement</strong>
+                                            <small class="d-block text-muted">Les etudiants pourront acceder a ce module</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Boutons -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="@Url.Action("DetailsCours", "Tuteur", new { id = Model.CoursId })" class="btn btn-cancel">
+                                    <i class="bi bi-x-circle"></i> Annuler
+                                </a>
+                                <button type="submit" class="btn btn-create">
+                                    <i class="bi bi-check-circle"></i> Creer le Module
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        function updateFileName(input, elementId) {
+            const file = input.files[0];
+            const nameElement = document.getElementById(elementId);
+            if (file) {
+                nameElement.textContent = '? ' + file.name;
+                nameElement.style.display = 'block';
+            }
+        }
+    </script>
+}
+

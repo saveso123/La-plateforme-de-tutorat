@@ -1,0 +1,255 @@
+@model ThotPlatform.Models.TentativeQuiz
+
+@{
+    ViewBag.Title = Model.Quiz.Titre;
+    var questions = (List<ThotPlatform.Models.QuestionQuiz>)ViewBag.Questions;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <!-- En-tete du quiz -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0"><i class="bi bi-question-circle"></i> @Model.Quiz.Titre</h4>
+                        <div id="timer" class="badge bg-dark fs-5">
+                            <i class="bi bi-clock"></i> <span id="timeRemaining">@(Model.Quiz.DureeLimiteMinutes ?? 60):00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-2">@Model.Quiz.Description</p>
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">
+                            <i class="bi bi-question-circle"></i> @questions.Count questions
+                        </small>
+                        <small class="text-muted">
+                            <i class="bi bi-trophy"></i> Note de passage: @Model.Quiz.NotePassage%
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barre de progression -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body py-2">
+                    <div class="d-flex justify-content-between mb-1">
+                        <small>Progression</small>
+                        <small><span id="questionsRepondues">0</span>/@questions.Count</small>
+                    </div>
+                    <div class="progress">
+                        <div id="progressBar" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulaire du quiz -->
+            @using (Html.BeginForm("SoumettreQuiz", "Quiz", FormMethod.Post, new { id = "quizForm" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("id", Model.TentativeId)
+
+                for (int i = 0; i < questions.Count; i++)
+                {
+                    var question = questions[i];
+                    var reponseExistante = Model.Reponses.FirstOrDefault(r => r.QuestionQuizId == question.QuestionQuizId);
+
+                    <div class="card shadow-sm mb-4 question-card" data-question-id="@question.QuestionQuizId">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">
+                                <span class="badge bg-primary me-2">@(i + 1)</span>
+                                @question.Texte
+                                <span class="text-muted small">(@question.Points point@(question.Points > 1 ? "s" : ""))</span>
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            @switch (question.Type)
+                            {
+                                case ThotPlatform.Models.TypeQuestionQuiz.ChoixMultiple:
+                                    <div class="choix-container">
+                                        @foreach (var choix in question.Choix.OrderBy(c => c.Ordre))
+                                        {
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input choix-radio" 
+                                                       type="radio" 
+                                                       name="question_@question.QuestionQuizId" 
+                                                       id="choix_@choix.ChoixId" 
+                                                       value="@choix.ChoixId"
+                                                       data-question-id="@question.QuestionQuizId"
+                                                       @(reponseExistante?.ChoixId == choix.ChoixId ? "checked" : "")>
+                                                <label class="form-check-label" for="choix_@choix.ChoixId">
+                                                    @choix.Texte
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                    break;
+
+                                case ThotPlatform.Models.TypeQuestionQuiz.VraiFaux:
+                                    <div class="choix-container">
+                                        @foreach (var choix in question.Choix.OrderBy(c => c.Ordre))
+                                        {
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input choix-radio" 
+                                                       type="radio" 
+                                                       name="question_@question.QuestionQuizId" 
+                                                       id="choix_@choix.ChoixId" 
+                                                       value="@choix.ChoixId"
+                                                       data-question-id="@question.QuestionQuizId"
+                                                       @(reponseExistante?.ChoixId == choix.ChoixId ? "checked" : "")>
+                                                <label class="form-check-label" for="choix_@choix.ChoixId">
+                                                    @choix.Texte
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                    break;
+
+                                case ThotPlatform.Models.TypeQuestionQuiz.ReponseCourte:
+                                case ThotPlatform.Models.TypeQuestionQuiz.ReponseLongue:
+                                    <textarea class="form-control reponse-texte" 
+                                              name="question_texte_@question.QuestionQuizId" 
+                                              rows="4" 
+                                              placeholder="Entrez votre reponse ici..."
+                                              data-question-id="@question.QuestionQuizId">@(reponseExistante?.ReponseTexte ?? "")</textarea>
+                                    break;
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Boutons de soumission -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body text-center">
+                        <button type="submit" class="btn btn-success btn-lg" id="btnSoumettre">
+                            <i class="bi bi-check-circle"></i> Soumettre le quiz
+                        </button>
+                        <a href="@Url.Action("VoirCours", "Etudiant", new { id = Model.Quiz.Module.CoursId })" 
+                           class="btn btn-outline-secondary btn-lg ms-2">
+                            <i class="bi bi-x-circle"></i> Abandonner
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var tentativeId = @Model.TentativeId;
+        var dureeMinutes = @(Model.Quiz.DureeLimiteMinutes ?? 60);
+        var tempsEcoule = Math.floor((new Date() - new Date('@Model.DateDebut.ToString("yyyy-MM-ddTHH:mm:ss")')) / 1000);
+        var tempsRestant = (dureeMinutes * 60) - tempsEcoule;
+        var timerInterval;
+
+        $(document).ready(function() {
+            // Demarrer le timer
+            demarrerTimer();
+
+            // Sauvegarder automatiquement les reponses
+            $('.choix-radio').change(function() {
+                var questionId = $(this).data('question-id');
+                var choixId = $(this).val();
+                sauvegarderReponse(questionId, choixId, null);
+                mettreAJourProgression();
+            });
+
+            $('.reponse-texte').on('blur', function() {
+                var questionId = $(this).data('question-id');
+                var reponseTexte = $(this).val();
+                sauvegarderReponse(questionId, null, reponseTexte);
+                mettreAJourProgression();
+            });
+
+            // Confirmation avant de quitter
+            window.addEventListener('beforeunload', function(e) {
+                e.preventDefault();
+                e.returnValue = '';
+            });
+
+            // Retirer la confirmation apres soumission
+            $('#quizForm').submit(function() {
+                window.removeEventListener('beforeunload', function() {});
+            });
+
+            mettreAJourProgression();
+        });
+
+        function demarrerTimer() {
+            timerInterval = setInterval(function() {
+                tempsRestant--;
+                
+                if (tempsRestant <= 0) {
+                    clearInterval(timerInterval);
+                    alert('Le temps est ecoule ! Le quiz sera soumis automatiquement.');
+                    $('#quizForm').submit();
+                    return;
+                }
+
+                var minutes = Math.floor(tempsRestant / 60);
+                var secondes = tempsRestant % 60;
+                $('#timeRemaining').text(minutes + ':' + (secondes < 10 ? '0' : '') + secondes);
+
+                // Changer la couleur si moins de 5 minutes
+                if (tempsRestant < 300) {
+                    $('#timer').removeClass('bg-dark').addClass('bg-danger');
+                }
+            }, 1000);
+        }
+
+        function sauvegarderReponse(questionId, choixId, reponseTexte) {
+            $.post('@Url.Action("SoumettreReponse", "Quiz")', {
+                tentativeId: tentativeId,
+                questionId: questionId,
+                choixId: choixId,
+                reponseTexte: reponseTexte
+            }, function(data) {
+                if (!data.success) {
+                    console.error('Erreur lors de la sauvegarde:', data.message);
+                }
+            });
+        }
+
+        function mettreAJourProgression() {
+            var totalQuestions = $('.question-card').length;
+            var questionsRepondues = 0;
+
+            $('.question-card').each(function() {
+                var hasRadioChecked = $(this).find('.choix-radio:checked').length > 0;
+                var hasTextFilled = $(this).find('.reponse-texte').val().trim().length > 0;
+                
+                if (hasRadioChecked || hasTextFilled) {
+                    questionsRepondues++;
+                }
+            });
+
+            var pourcentage = (questionsRepondues / totalQuestions) * 100;
+            $('#questionsRepondues').text(questionsRepondues);
+            $('#progressBar').css('width', pourcentage + '%');
+        }
+    </script>
+}
+
+<style>
+    .question-card {
+        transition: all 0.3s ease;
+    }
+
+    .question-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+    }
+
+    .form-check-input:checked ~ .form-check-label {
+        font-weight: 600;
+        color: #0d6efd;
+    }
+
+    #timer {
+        font-size: 1.2rem;
+        padding: 0.5rem 1rem;
+    }
+</style>
+

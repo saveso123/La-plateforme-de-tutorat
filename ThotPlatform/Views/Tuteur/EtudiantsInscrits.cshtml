@@ -1,0 +1,102 @@
+@model IEnumerable<ThotPlatform.ViewModels.EtudiantCoursViewModel>
+
+@{
+    ViewBag.Title = "etudiants Inscrits";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <a href="@Url.Action("MesCours", "Tuteur")" class="btn btn-outline-secondary mb-3">
+                <i class="bi bi-arrow-left"></i> Retour a mes cours
+            </a>
+            <h2>etudiants Inscrits</h2>
+            <p class="text-muted">Cours : <strong>@ViewBag.CoursNom</strong></p>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Count() > 0)
+    {
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-people"></i> 
+                    @ViewBag.NombreEtudiants etudiant(s) inscrit(s)
+                </h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prenom</th>
+                            <th>Email</th>
+                            <th>Niveau</th>
+                            <th>Date d'Inscription</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var etudiant in Model)
+                        {
+                            <tr>
+                                <td><strong>@etudiant.Nom</strong></td>
+                                <td>@etudiant.Prenom</td>
+                                <td>
+                                    <a href="mailto:@etudiant.Email">@etudiant.Email</a>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">@etudiant.Niveau</span>
+                                </td>
+                                <td>@etudiant.DateInscription.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <a href="mailto:@etudiant.Email?subject=Message de votre tuteur" 
+                                       class="btn btn-sm btn-primary" title="Envoyer un email">
+                                        <i class="bi bi-envelope"></i> Contacter
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-primary">@ViewBag.NombreEtudiants</h3>
+                        <p class="text-muted">etudiants inscrits</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-success">@Model.GroupBy(e => e.Niveau).Count()</h3>
+                        <p class="text-muted">Niveaux differents</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <a href="@Url.Action("DetailsCours", "Tuteur", new { id = ViewBag.CoursId })" 
+                           class="btn btn-primary">
+                            <i class="bi bi-arrow-right"></i> Retour au cours
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h5><i class="bi bi-info-circle"></i> Aucun etudiant inscrit</h5>
+            <p class="mb-0">Aucun etudiant n'est encore inscrit a ce cours.</p>
+        </div>
+    }
+</div>

@@ -1,0 +1,81 @@
+@model IEnumerable<ThotPlatform.ViewModels.RencontrePhysiqueViewModel>
+
+@{
+    ViewBag.Title = "Mes Rencontres Physiques";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-person-check"></i> Mes Rencontres Physiques</h2>
+            <p class="text-muted">Historique de toutes vos rencontres avec les tuteurs</p>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var rencontre in Model)
+            {
+                <div class="col-md-6 mb-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header @(rencontre.Statut == ThotPlatform.Models.StatutRencontre.Confirmee ? "bg-success" : rencontre.Statut == ThotPlatform.Models.StatutRencontre.Terminee ? "bg-info" : rencontre.Statut == ThotPlatform.Models.StatutRencontre.Annulee ? "bg-danger" : "bg-warning") text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-calendar-event"></i> @rencontre.DateHeure.ToString("dd/MM/yyyy HH:mm")
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Tuteur :</strong> @rencontre.TuteurPrenom @rencontre.TuteurNom</p>
+                            <p><strong>Domaine :</strong> @rencontre.DomaineNom</p>
+                            <p><strong>Lieu :</strong> @rencontre.Lieu</p>
+                            <p><strong>Duree :</strong> @rencontre.DureeHeures h</p>
+                            <p><strong>Tarif :</strong> @rencontre.Tarif.ToString("C") @(rencontre.TarifPreferentiel ? "(Preferentiel)" : "")</p>
+                            <p><strong>Cout Total :</strong> <strong class="text-primary">@rencontre.CoutTotal.ToString("C")</strong></p>
+                            <p>
+                                <span class="badge @(rencontre.Statut == ThotPlatform.Models.StatutRencontre.Confirmee ? "bg-success" : rencontre.Statut == ThotPlatform.Models.StatutRencontre.Terminee ? "bg-info" : rencontre.Statut == ThotPlatform.Models.StatutRencontre.Annulee ? "bg-danger" : "bg-warning")">
+                                    @rencontre.Statut
+                                </span>
+                            </p>
+                            @if (rencontre.NoteEtudiant.HasValue)
+                            {
+                                <p><strong>Votre Evaluation :</strong> @rencontre.NoteEtudiant/5 ⭐</p>
+                            }
+                        </div>
+                        <div class="card-footer">
+                            <a href="@Url.Action("Details", "RencontrePhysique", new { id = rencontre.RencontreId })" class="btn btn-sm btn-primary">
+                                <i class="bi bi-eye"></i> Details
+                            </a>
+                            @if (rencontre.Statut == ThotPlatform.Models.StatutRencontre.EnAttente)
+                            {
+                                <form method="post" action="@Url.Action("Annuler", "RencontrePhysique")" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@rencontre.RencontreId" />
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Etes-vous sur ?')">
+                                        <i class="bi bi-x-circle"></i> Annuler
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Vous n'avez pas encore de rencontres physiques. 
+            <a href="@Url.Action("Demander", "RencontrePhysique")" class="alert-link">Demander une rencontre</a>
+        </div>
+    }
+
+    <div class="mt-3">
+        <a href="@Url.Action("Demander", "RencontrePhysique")" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Demander une Rencontre
+        </a>
+        <a href="@Url.Action("Index", "Etudiant")" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Retour
+        </a>
+    </div>
+</div>

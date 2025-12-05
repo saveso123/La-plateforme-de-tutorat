@@ -1,0 +1,326 @@
+/* Styles professionnels pour les composants */
+
+/* Dashboard Cards */
+.dashboard-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #f0f0f0;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+}
+
+.dashboard-card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.dashboard-card-icon.primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.dashboard-card-icon.success {
+    background: linear-gradient(135deg, #11998e 0%, #0d7377 100%);
+    color: white;
+}
+
+.dashboard-card-icon.danger {
+    background: linear-gradient(135deg, #f5576c 0%, #d63031 100%);
+    color: white;
+}
+
+.dashboard-card-icon.warning {
+    background: linear-gradient(135deg, #ffa502 0%, #ff7675 100%);
+    color: white;
+}
+
+.dashboard-card-title {
+    font-size: 0.9rem;
+    color: #95a5a6;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-card-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-card-footer {
+    font-size: 0.85rem;
+    color: #95a5a6;
+    padding-top: 1rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* List Items */
+.list-item {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.list-item:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+}
+
+.list-item-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    flex-shrink: 0;
+}
+
+.list-item-content {
+    flex: 1;
+}
+
+.list-item-title {
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+}
+
+.list-item-subtitle {
+    font-size: 0.9rem;
+    color: #95a5a6;
+}
+
+.list-item-action {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Progress Indicators */
+.progress-indicator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.progress-indicator-label {
+    font-weight: 600;
+    color: #2c3e50;
+    min-width: 100px;
+}
+
+.progress-indicator-bar {
+    flex: 1;
+    height: 10px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-indicator-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.progress-indicator-value {
+    font-weight: 700;
+    color: #667eea;
+    min-width: 50px;
+    text-align: right;
+}
+
+/* Stats Box */
+.stats-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
+}
+
+.stats-box-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.stats-box-label {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+/* Timeline */
+.timeline {
+    position: relative;
+    padding: 2rem 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 30px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+}
+
+.timeline-item {
+    margin-bottom: 2rem;
+    margin-left: 100px;
+    position: relative;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -70px;
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.timeline-item-title {
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-item-date {
+    font-size: 0.9rem;
+    color: #95a5a6;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-item-content {
+    font-size: 0.95rem;
+    color: #495057;
+    line-height: 1.6;
+}
+
+/* Badges Advanced */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.badge-status.active {
+    background: linear-gradient(135deg, #11998e 0%, #0d7377 100%);
+    color: white;
+}
+
+.badge-status.pending {
+    background: linear-gradient(135deg, #ffa502 0%, #ff7675 100%);
+    color: white;
+}
+
+.badge-status.inactive {
+    background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+    color: white;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: white;
+    border-radius: 16px;
+    border: 2px dashed #e0e0e0;
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    color: #e0e0e0;
+    margin-bottom: 1rem;
+}
+
+.empty-state-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state-text {
+    color: #95a5a6;
+    margin-bottom: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard-card-value {
+        font-size: 2rem;
+    }
+    
+    .list-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .list-item-action {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .timeline {
+        padding-left: 0;
+    }
+    
+    .timeline::before {
+        left: 15px;
+    }
+    
+    .timeline-item {
+        margin-left: 60px;
+    }
+    
+    .timeline-item::before {
+        left: -45px;
+    }
+    
+    .stats-box {
+        padding: 1.5rem;
+    }
+    
+    .stats-box-value {
+        font-size: 2rem;
+    }
+}

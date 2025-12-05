@@ -1,0 +1,85 @@
+@model IEnumerable<ThotPlatform.Models.Quiz>
+
+@{
+    ViewBag.Title = "Gestion des Quiz";
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", "Tuteur")" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour au tableau de bord
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2>Gestion des Quiz</h2>
+                <p class="text-muted">Gerez tous les quiz de vos modules</p>
+            </div>
+            <div>
+                <a href="@Url.Action("SelectModule", "Quiz")" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Creer un quiz
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Titre</th>
+                    <th>Module</th>
+                    <th>Cours</th>
+                    <th>Questions</th>
+                    <th>Tentatives</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var quiz in Model)
+                {
+                    <tr>
+                        <td><strong>@quiz.Titre</strong></td>
+                        <td>@quiz.Module.Titre</td>
+                        <td>@quiz.Module.Cours.Nom</td>
+                        <td>
+                            <span class="badge bg-info">@quiz.Questions.Count</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">@quiz.Tentatives.Count</span>
+                        </td>
+                        <td>
+                            @if (quiz.EstPublie)
+                            {
+                                <span class="badge bg-success">Publie</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">Brouillon</span>
+                            }
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Details", "Quiz", new { id = quiz.QuizId })" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> Voir
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <h5>Aucun quiz</h5>
+        <p class="mb-0">Vous n'avez pas encore cree de quiz. Creez un module et ajoutez des quiz.</p>
+    </div>
+}
+

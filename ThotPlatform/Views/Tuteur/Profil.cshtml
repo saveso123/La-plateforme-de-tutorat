@@ -1,0 +1,108 @@
+@model ThotPlatform.Models.Tuteur
+
+@{
+    ViewBag.Title = "Mon Profil";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0">Mon Profil Tuteur</h3>
+            </div>
+            <div class="card-body p-4">
+                @using (Html.BeginForm("UpdateProfil", "Tuteur", FormMethod.Post, new { @class = "needs-validation" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.Nom, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Nom, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Nom, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.Prenom, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Prenom, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Prenom, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @readonly = "readonly" })
+                        <small class="text-muted">L'email ne peut pas etre modifie</small>
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Telephone, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Telephone, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Telephone, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Biographie, new { @class = "form-label" })
+                        @Html.TextAreaFor(m => m.Biographie, new { @class = "form-control", rows = 3 })
+                        @Html.ValidationMessageFor(m => m.Biographie, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Diplomes, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Diplomes, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Diplomes, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            Enregistrer les modifications
+                        </button>
+                        <a href="@Url.Action("Index", "Tuteur")" class="btn btn-outline-secondary">Annuler</a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">Statistiques</h6>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Vous avez aide de nombreux etudiants a reussir. Continuez votre excellent travail !</p>
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <h3 class="text-primary">@(Model.Reponses?.Count ?? 0)</h3>
+                        <p class="text-muted">Reponses donnees</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h3 class="text-success">@Model.NoteMoyenne.ToString("F2")</h3>
+                        <p class="text-muted">Note moyenne / 5</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h3 class="text-warning">@Model.NombreEvaluations</h3>
+                        <p class="text-muted">Evaluations</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-body">
+                <h6>Informations sur le compte</h6>
+                <p><strong>Identifiant unique :</strong> <span class="badge bg-success">@Model.IdentifiantUnique</span></p>
+                <p><strong>Date d'inscription :</strong> @Model.DateInscription.ToString("dd/MM/yyyy")</p>
+                <p><strong>Annees d'experience :</strong> @Model.AnneesExperience ans</p>
+                <div class="d-flex gap-2">
+                    <a href="@Url.Action("ChangePassword", "Account")" class="btn btn-sm btn-warning">Changer mon mot de passe</a>
+                    <a href="@Url.Action("Logout", "Account")" class="btn btn-sm btn-danger">Deconnexion</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

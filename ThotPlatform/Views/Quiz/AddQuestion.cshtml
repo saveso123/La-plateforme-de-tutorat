@@ -1,0 +1,128 @@
+@model ThotPlatform.Models.QuestionQuiz
+
+@{
+    ViewBag.Title = "Ajouter une Question";
+}
+
+<div class="container mt-4">
+    <a href="@Url.Action("Details", "Quiz", new { id = Model.QuizId })" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Retour
+    </a>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Ajouter une Question</h4>
+                    <small>@ViewBag.QuizTitre</small>
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm("AddQuestion", "Quiz", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group mb-3">
+                            <label for="Texte" class="form-label"><strong>Texte de la question</strong></label>
+                            @Html.TextAreaFor(m => m.Texte, new { @class = "form-control", rows = 3, placeholder = "Ex: Quel est le capital de la France?" })
+                            @Html.ValidationMessageFor(m => m.Texte, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="Points" class="form-label"><strong>Points</strong></label>
+                            @Html.TextBoxFor(m => m.Points, new { @class = "form-control", type = "number", value = "1" })
+                        </div>
+                        @Html.HiddenFor(m => m.Type, new { value = (int)ThotPlatform.Models.TypeQuestionQuiz.ChoixMultiple })
+
+                        <hr />
+
+                        <h5 class="mb-3"><i class="bi bi-list-check"></i> Choix de reponses</h5>
+
+                        <div id="choixContainer">
+                            @for (int i = 0; i < 4; i++)
+                            {
+                                <div class="card mb-2 choix-item">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-9">
+                                                <input type="text" name="choixTexte[@i]" class="form-control" placeholder="Reponse @(i + 1)">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input type="checkbox" name="choixCorrect[@i]" class="form-check-input checkbox-correct" id="choix_@i">
+                                                    <label class="form-check-label" for="choix_@i">
+                                                        Correcte
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <button type="button" class="btn btn-sm btn-secondary mb-3" onclick="ajouterChoix()">
+                            <i class="bi bi-plus"></i> Ajouter un choix
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger mb-3" onclick="supprimerDernier()" style="margin-left: 5px;">
+                            <i class="bi bi-trash"></i> Supprimer le dernier
+                        </button>
+
+                        @Html.HiddenFor(m => m.QuizId)
+                        @Html.HiddenFor(m => m.Ordre)
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="@Url.Action("Details", "Quiz", new { id = Model.QuizId })" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Ajouter la Question
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function ajouterChoix() {
+        const container = document.getElementById('choixContainer');
+        const count = container.querySelectorAll('.choix-item').length;
+        
+        const html = `
+            <div class="card mb-2 choix-item">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <input type="text" name="choixTexte[${count}]" class="form-control" placeholder="Reponse ${count + 1}">
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox" name="choixCorrect[${count}]" class="form-check-input checkbox-correct" id="choix_${count}">
+                                <label class="form-check-label" for="choix_${count}">
+                                    Correcte
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        container.insertAdjacentHTML('beforeend', html);
+    }
+
+    function supprimerDernier() {
+        const container = document.getElementById('choixContainer');
+        const items = container.querySelectorAll('.choix-item');
+        if (items.length > 0) {
+            items[items.length - 1].remove();
+        }
+    }
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

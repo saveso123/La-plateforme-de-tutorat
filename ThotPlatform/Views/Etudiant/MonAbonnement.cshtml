@@ -1,0 +1,149 @@
+﻿@model ThotPlatform.Models.Etudiant
+
+@{
+    ViewBag.Title = "Mon Abonnement";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <!-- Statut de l'abonnement -->
+        <div class="card shadow mb-4 @(Model.AbonnementActif ? "border-success" : "border-danger")" style="border-width: 2px;">
+            <div class="card-header @(Model.AbonnementActif ? "bg-success" : "bg-danger") text-white">
+                <h3 class="mb-0">
+                    <i class="bi @(Model.AbonnementActif ? "bi-check-circle-fill" : "bi-x-circle-fill")"></i>
+                    @(Model.AbonnementActif ? "Abonnement Actif" : "Pas d'Abonnement")
+                </h3>
+            </div>
+            <div class="card-body">
+                @{
+                    if (Model.AbonnementActif)
+                    {
+                        <div class="alert alert-success mb-3">
+                            <h5 class="alert-heading">Votre abonnement est actif</h5>
+                            <p class="mb-0">Vous avez acces a tous les cours et ressources de la plateforme.</p>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p><strong>Date d'activation :</strong></p>
+                                <p class="text-muted">@(Model.DateDebutAbonnement?.ToString("dd/MM/yyyy") ?? "N/A")</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Date d'expiration :</strong></p>
+                                <p class="text-danger">
+                                    <strong>@(Model.DateFinAbonnement?.ToString("dd/MM/yyyy") ?? "N/A")</strong>
+                                </p>
+                            </div>
+                        </div>
+
+                        var joursRestants = Model.DateFinAbonnement.HasValue 
+                            ? (int)(Model.DateFinAbonnement.Value - DateTime.Now).TotalDays 
+                            : 0;
+                        
+                        if (joursRestants > 0)
+                        {
+                            <div class="progress mb-3">
+                                <div class="progress-bar @(joursRestants > 30 ? "bg-success" : joursRestants > 7 ? "bg-warning" : "bg-danger")" 
+                                     role="progressbar" 
+                                     style="width: @((joursRestants * 100) / 365)%"
+                                     aria-valuenow="@joursRestants" aria-valuemin="0" aria-valuemax="365">
+                                    @joursRestants jours restants
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                Votre abonnement a expire. Veuillez le renouveler pour continuer a acceder aux cours.
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger mb-3">
+                            <h5 class="alert-heading">Vous n'avez pas d'abonnement actif</h5>
+                            <p class="mb-0">Souscrivez a un abonnement pour acceder a tous les cours et ressources de la plateforme.</p>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <!-- Details de l'abonnement -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Details de l'abonnement</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>Type d'abonnement :</strong></p>
+                        <p class="text-muted">Abonnement Premium</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Statut :</strong></p>
+                        <p>
+                            @if (Model.AbonnementActif)
+                            {
+                                <span class="badge bg-success">Actif</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Inactif</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+
+                <hr />
+
+                <h6 class="mb-3">Avantages inclus :</h6>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <strong>Acces illimite</strong> a tous les cours
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <strong>Telechargement</strong> des ressources
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <strong>Certificats</strong> de completion
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <strong>Support prioritaire</strong> des tuteurs
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <strong>Acces aux quiz</strong> et evaluations
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="card shadow">
+            <div class="card-body text-center">
+                @if (!Model.AbonnementActif)
+                {
+                    <a href="@Url.Action("Abonnement", "Payment")" class="btn btn-success btn-lg mb-2">
+                        <i class="bi bi-credit-card"></i> Souscrire a un abonnement
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.Action("Abonnement", "Payment")" class="btn btn-primary btn-lg mb-2">
+                        <i class="bi bi-arrow-repeat"></i> Renouveler l'abonnement
+                    </a>
+                }
+
+                <a href="@Url.Action("Index", "Etudiant")" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-arrow-left"></i> Retour au tableau de bord
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

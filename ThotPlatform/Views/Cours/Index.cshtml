@@ -1,0 +1,94 @@
+@model List<ThotPlatform.Models.Cours>
+
+@{
+    ViewBag.Title = "Catalogue de cours";
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour a l'accueil
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2> Catalogue de cours E-learning</h2>
+        <p class="text-muted">Explorez nos cours dans tous les domaines scientifiques</p>
+    </div>
+    <div class="col-md-4 text-end">
+        @if (Session["UserType"]?.ToString() == "Tuteur")
+        {
+            <a href="@Url.Action("Create", "Cours")" class="btn btn-success">
+                 Crer un cours
+            </a>
+        }
+    </div>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">
+        <h5>Aucun cours disponible pour le moment</h5>
+        <p>Les cours seront bientt disponibles. Revenez plus tard !</p>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var cours in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow">
+                    @if (!string.IsNullOrEmpty(cours.ImageCouverture))
+                    {
+                        <img src="@Url.Content(cours.ImageCouverture)" class="card-img-top" alt="@cours.Nom" style="height: 200px; object-fit: cover;">
+                    }
+                    else
+                    {
+                        <div class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <h1></h1>
+                        </div>
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@cours.Nom</h5>
+                        <p class="card-text text-muted">
+                            @(cours.Description.Length > 100 ? cours.Description.Substring(0, 100) + "..." : cours.Description)
+                        </p>
+                        <div class="mb-2">
+                            <span class="badge bg-primary">@cours.Domaine.Nom</span>
+                            <span class="badge bg-info">@cours.Niveau</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small class="text-muted">
+                                <i class="bi bi-person"></i> @cours.Tuteur.NomComplet
+                            </small>
+                            <small class="text-muted">
+                                <i class="bi bi-people"></i> @cours.NombreInscrits
+                            </small>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">
+                                <i class="bi bi-collection"></i> @cours.NombreModules modules
+                            </small>
+                            <small class="text-muted ms-2">
+                                <i class="bi bi-clock"></i> @cours.DureeEstimeeHeures h
+                            </small>
+                        </div>
+                        @if (cours.NoteMoyenne > 0)
+                        {
+                            <div class="mb-2">
+                                <span class="badge bg-warning text-dark"> @cours.NoteMoyenne.ToString("F1")</span>
+                            </div>
+                        }
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a href="@Url.Action("Details", "Cours", new { id = cours.CoursId })" class="btn btn-primary w-100">
+                            Voir le cours
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+

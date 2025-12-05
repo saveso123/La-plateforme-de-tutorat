@@ -1,0 +1,115 @@
+﻿@model ThotPlatform.Models.Tuteur
+
+@{
+    ViewBag.Title = "Ma Disponibilite";
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", "Tuteur")" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour au tableau de bord
+    </a>
+</div>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="bi bi-calendar-check"></i> Ma Disponibilite</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Statut actuel :</strong>
+                        @if (Model.EstDisponible)
+                        {
+                            <span class="badge bg-success">Disponible</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Non disponible</span>
+                        }
+                    </div>
+
+                    @using (Html.BeginForm("UpdateDisponibilite", "Tuteur", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="estDisponible" value="false" />
+                                <input class="form-check-input" type="checkbox" id="disponibilite" name="estDisponible" value="true"
+                                       @(Model.EstDisponible ? "checked" : "") />
+                                <label class="form-check-label" for="disponibilite">
+                                    Je suis disponible pour les sessions de clavardage
+                                </label>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <h5 class="mb-3">Mes Domaines d'Expertise</h5>
+                        <div class="row">
+                            @if (ViewBag.Domaines != null)
+                            {
+                                foreach (var domaine in ViewBag.Domaines as List<ThotPlatform.Models.Domaine>)
+                                {
+                                    var estSelectione = Model.DomainesExpertise != null && Model.DomainesExpertise.Any(d => d.DomaineId == domaine.DomaineId);
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="domaine_@domaine.DomaineId" 
+                                                   name="domainesIds" value="@domaine.DomaineId" @(estSelectione ? "checked" : "") />
+                                            <label class="form-check-label" for="domaine_@domaine.DomaineId">
+                                                @domaine.Nom
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-exclamation-triangle"></i> Aucun domaine disponible.
+                                </div>
+                            }
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> Enregistrer mes Preferences
+                            </button>
+                            <a href="@Url.Action("Index", "Tuteur")" class="btn btn-outline-secondary">Annuler</a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Statistiques -->
+            <div class="card mt-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> Mes Statistiques</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <h3 class="text-primary">@ViewBag.SessionsEnCours</h3>
+                            <p class="text-muted">Sessions en cours</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h3 class="text-success">@ViewBag.SessionsTerminees</h3>
+                            <p class="text-muted">Sessions terminees</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h3 class="text-warning">@ViewBag.NoteMoyenne</h3>
+                            <p class="text-muted">Note moyenne</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,90 @@
+@model IEnumerable<ThotPlatform.Models.Quiz>
+
+@{
+    ViewBag.Title = "Quiz du Cours";
+    var coursId = ViewBag.CoursId;
+    var coursNom = ViewBag.CoursNom;
+}
+
+<div class="container mt-4">
+    <a href="@Url.Action("VoirCours", "Etudiant", new { id = coursId })" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Retour au cours
+    </a>
+
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0"><i class="bi bi-question-circle"></i> Quiz - @coursNom</h3>
+                </div>
+            </div>
+
+            @if (Model != null && Model.Any())
+            {
+                <div class="row">
+                    @foreach (var quiz in Model.OrderBy(q => q.Titre))
+                    {
+                        <div class="col-md-6 mb-4">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">@quiz.Titre</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted">@quiz.Description</p>
+                                    <hr />
+                                    <div class="row text-center mb-3">
+                                        <div class="col-6">
+                                            <small class="text-muted"><i class="bi bi-question"></i> Questions</small>
+                                            <br />
+                                            <strong>@quiz.Questions.Count</strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted"><i class="bi bi-percent"></i> Note passage</small>
+                                            <br />
+                                            <strong>@quiz.NotePassage%</strong>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row text-center">
+                                        <div class="col-6">
+                                            <small class="text-muted"><i class="bi bi-clock"></i> Duree</small>
+                                            <br />
+                                            <small>@(quiz.DureeLimiteMinutes.HasValue ? quiz.DureeLimiteMinutes + " min" : "Illimitee")</small>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted"><i class="bi bi-repeat"></i> Tentatives</small>
+                                            <br />
+                                            <small>@quiz.NombreTentativesAutorisees</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-light">
+                                    @if (quiz.EstPublie)
+                                    {
+                                        <a href="@Url.Action("CommencerQuiz", "Quiz", new { id = quiz.QuizId })" class="btn btn-primary w-100">
+                                            <i class="bi bi-play-circle"></i> Commencer le Quiz
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-secondary w-100" disabled>
+                                            <i class="bi bi-lock"></i> Quiz non disponible
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info shadow-sm">
+                    <h5><i class="bi bi-info-circle"></i> Aucun quiz disponible</h5>
+                    <p class="mb-0">Il n'y a pas encore de quiz pour ce cours. Revenez plus tard !</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

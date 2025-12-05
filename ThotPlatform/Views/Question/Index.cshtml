@@ -1,0 +1,92 @@
+@model List<ThotPlatform.Models.Question>
+
+@{
+    ViewBag.Title = "FAQ - Questions et Rponses";
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour a l'accueil
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2> Foire aux questions (FAQ)</h2>
+        <p class="text-muted">Consultez les questions et reponses de la communaute</p>
+    </div>
+    <div class="col-md-4 text-end">
+        @if (Session["UserType"]?.ToString() == "Etudiant")
+        {
+            <a href="@Url.Action("Create", "Question")" class="btn btn-primary">
+                 Poser une question
+            </a>
+        }
+    </div>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">
+        <h5>Aucune question pour le moment</h5>
+        <p>Soyez le premier  poser une question !</p>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var question in Model)
+        {
+            <div class="col-12 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title">
+                                    <a href="@Url.Action("Details", "Question", new { id = question.QuestionId })">
+                                        @question.Titre
+                                    </a>
+                                </h5>
+                                <p class="card-text text-muted">
+                                    @(question.Contenu.Length > 150 ? question.Contenu.Substring(0, 150) + "..." : question.Contenu)
+                                </p>
+                                <div class="d-flex gap-3">
+                                    <small class="text-muted">
+                                        <i class="bi bi-person"></i> @question.Etudiant.NomComplet
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar"></i> @question.DateCreation.ToString("dd/MM/yyyy HH:mm")
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="bi bi-tag"></i> @question.Domaine.Nom
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="bi bi-eye"></i> @question.NombreVues vues
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="bi bi-chat"></i> @question.Reponses.Count reponse(s)
+                                    </small>
+                                </div>
+                            </div>
+                            <div>
+                                @if (question.Statut == ThotPlatform.Models.StatutQuestion.Repondue)
+                                {
+                                    <span class="badge bg-success">Rpondue</span>
+                                }
+                                else if (question.Statut == ThotPlatform.Models.StatutQuestion.EnCours)
+                                {
+                                    <span class="badge bg-warning">En cours</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">En attente</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+

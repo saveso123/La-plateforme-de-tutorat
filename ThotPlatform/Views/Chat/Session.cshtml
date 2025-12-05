@@ -1,0 +1,194 @@
+﻿@model ThotPlatform.Models.SessionClavardage
+
+@{
+    ViewBag.Title = "Session de Clavardage";
+}
+
+<div class="container-fluid mt-4">
+    <div class="mb-3">
+        <a href="@Url.Action("MesSessions", "Chat")" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Retour a mes sessions
+        </a>
+    </div>
+
+    <div class="row h-100">
+        <!-- Panneau lateral -->
+        <div class="col-md-3 border-end">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Informations de la Session</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Domaine :</strong> @Model.Domaine.Nom</p>
+                    <p><strong>Type :</strong> @Model.Type</p>
+                    <p><strong>Statut :</strong> 
+                        <span class="badge @(Model.Statut == ThotPlatform.Models.StatutSession.EnCours ? "bg-success" : "bg-warning")">
+                            @Model.Statut
+                        </span>
+                    </p>
+                    <p><strong>Debut :</strong> @Model.DateDebut.ToString("dd/MM/yyyy HH:mm")</p>
+                    @if (Model.DateFin.HasValue)
+                    {
+                        <p><strong>Fin :</strong> @Model.DateFin.Value.ToString("dd/MM/yyyy HH:mm")</p>
+                        <p><strong>Duree :</strong> @((int?)Model.DureeReelle?.TotalMinutes ?? 0) minutes</p>
+                    }
+                    <p><strong>Cout :</strong> @Model.Cout.ToString("C")</p>
+
+                    @if (Model.Statut == ThotPlatform.Models.StatutSession.EnAttente)
+                    {
+                        <form method="post" action="@Url.Action("StartSession", "Chat")">
+                            <input type="hidden" name="sessionId" value="@Model.SessionId" />
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-play-circle"></i> Demarrer la Session
+                            </button>
+                        </form>
+                    }
+                    else if (Model.Statut == ThotPlatform.Models.StatutSession.EnCours)
+                    {
+                        <form method="post" action="@Url.Action("EndSession", "Chat")">
+                            <input type="hidden" name="sessionId" value="@Model.SessionId" />
+                            <button type="submit" class="btn btn-danger w-100">
+                                <i class="bi bi-stop-circle"></i> Terminer la Session
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+
+            @if (Model.Statut == ThotPlatform.Models.StatutSession.Terminee && Model.NoteEtudiant == null)
+            {
+                <div class="card mt-3">
+                    <div class="card-header bg-warning text-dark">
+                        <h6 class="mb-0">evaluer la Session</h6>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="@Url.Action("RateSession", "Chat")">
+                            <input type="hidden" name="sessionId" value="@Model.SessionId" />
+                            <div class="mb-3">
+                                <label class="form-label">Note (1-5)</label>
+                                <select name="note" class="form-select" required>
+                                    <option value="">Selectionner une note</option>
+                                    <option value="1">1 - Tres mauvais</option>
+                                    <option value="2">2 - Mauvais</option>
+                                    <option value="3">3 - Moyen</option>
+                                    <option value="4">4 - Bon</option>
+                                    <option value="5">5 - Excellent</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Commentaire</label>
+                                <textarea name="commentaire" class="form-control" rows="3" placeholder="Votre avis..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Soumettre</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Zone de chat -->
+        <div class="col-md-9">
+            <div class="card h-100 d-flex flex-column">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-chat-dots"></i>
+                        Conversation avec @(Model.Etudiant.UtilisateurId == (int)Session["UserId"] ? Model.Tuteur.Prenom + " " + Model.Tuteur.Nom : Model.Etudiant.Prenom + " " + Model.Etudiant.Nom)
+                    </h5>
+                </div>
+
+                <!-- Messages -->
+                <div class="card-body flex-grow-1 overflow-auto" id="messagesContainer" style="height: 500px;">
+                    @foreach (var message in Model.Messages.OrderBy(m => m.DateEnvoi))
+                    {
+                        var isCurrentUser = message.UtilisateurId == (int)Session["UserId"];
+                        <div class="mb-3 @(isCurrentUser ? "text-end" : "")">
+                            <div class="d-inline-block @(isCurrentUser ? "bg-primary" : "bg-light") text-@(isCurrentUser ? "white" : "dark") p-3 rounded" style="max-width: 70%;">
+                                <p class="mb-1">@message.Contenu</p>
+                                <small class="@(isCurrentUser ? "text-white-50" : "text-muted")">
+                                    @message.DateEnvoi.ToString("HH:mm")
+                                    @if (message.EstLu)
+                                    {
+                                        <i class="bi bi-check2-all"></i>
+                                    }
+                                </small>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Formulaire d'envoi -->
+                @if (Model.Statut == ThotPlatform.Models.StatutSession.EnCours)
+                {
+                    <div class="card-footer">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="messageInput" placeholder="Votre message..." />
+                            <button class="btn btn-primary" type="button" id="sendBtn">
+                                <i class="bi bi-send"></i> Envoyer
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script src="~/Scripts/signalr/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script>
+        $(function () {
+            var chat = $.connection.chatHub;
+            var sessionId = @Model.SessionId;
+
+            chat.client.receiveMessage = function (message) {
+                var messageHtml = '<div class="mb-3 ' + (message.utilisateurId === @(int)Session["UserId"] ? 'text-end' : '') + '">' +
+                    '<div class="d-inline-block ' + (message.utilisateurId === @(int)Session["UserId"] ? 'bg-primary text-white' : 'bg-light text-dark') + ' p-3 rounded" style="max-width: 70%;">' +
+                    '<p class="mb-1">' + message.contenu + '</p>' +
+                    '<small class="' + (message.utilisateurId === @(int)Session["UserId"] ? 'text-white-50' : 'text-muted') + '">' +
+                    message.dateEnvoi + '</small>' +
+                    '</div>' +
+                    '</div>';
+                $('#messagesContainer').append(messageHtml);
+                $('#messagesContainer').scrollTop($('#messagesContainer')[0].scrollHeight);
+            };
+
+            chat.client.userJoined = function (data) {
+                console.log('Utilisateur connecte');
+            };
+
+            chat.client.userLeft = function (data) {
+                console.log('Utilisateur deconnecte');
+            };
+
+            chat.client.error = function (error) {
+                alert('Erreur: ' + error);
+            };
+
+            $.connection.hub.start().done(function () {
+                chat.server.joinSession(sessionId);
+
+                $('#sendBtn').click(function () {
+                    var message = $('#messageInput').val();
+                    if (message.trim() !== '') {
+                        chat.server.sendMessage(sessionId, message);
+                        $('#messageInput').val('');
+                    }
+                });
+
+                $('#messageInput').keypress(function (e) {
+                    if (e.which === 13) {
+                        $('#sendBtn').click();
+                        return false;
+                    }
+                });
+            });
+
+            $(window).on('beforeunload', function () {
+                chat.server.leaveSession(sessionId);
+            });
+        });
+    </script>
+}

@@ -1,0 +1,208 @@
+﻿@model ThotPlatform.Models.Etudiant
+
+@{
+    ViewBag.Title = "Tableau de Bord Complet";
+}
+
+<div class="container-fluid mt-4">
+    <!-- En-tete de bienvenue -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-primary" role="alert">
+                <h4 class="alert-heading">
+                    <i class="bi bi-hand-thumbs-up"></i> Bienvenue @Model.Prenom !
+                </h4>
+                <p class="mb-0">Vous etes connecte a la plateforme Thot. Explorez nos services de tutorat et e-learning.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statut d'abonnement -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card @(Model.AbonnementActif ? "border-success" : "border-danger")">
+                <div class="card-body text-center">
+                    <i class="bi @(Model.AbonnementActif ? "bi-check-circle-fill text-success" : "bi-x-circle-fill text-danger") fs-1"></i>
+                    <h5 class="mt-2">@(Model.AbonnementActif ? "Abonnement Actif" : "Pas d'Abonnement")</h5>
+                    @if (Model.AbonnementActif && Model.DateFinAbonnement.HasValue)
+                    {
+                        <p class="text-muted">Expire le @Model.DateFinAbonnement.Value.ToString("dd/MM/yyyy")</p>
+                        <a href="@Url.Action("MonAbonnement", "Etudiant")" class="btn btn-sm btn-primary">Gerer</a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("Abonnement", "Payment")" class="btn btn-sm btn-success">S'abonner</a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-book-fill text-info fs-1"></i>
+                    <h5 class="mt-2">@ViewBag.CoursInscrits</h5>
+                    <p class="text-muted">Cours inscrits</p>
+                    <a href="@Url.Action("MesCours", "Cours")" class="btn btn-sm btn-info">Voir</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-question-circle-fill text-warning fs-1"></i>
+                    <h5 class="mt-2">@ViewBag.QuestionsEnCours</h5>
+                    <p class="text-muted">Questions en attente</p>
+                    <a href="@Url.Action("MesQuestions", "Etudiant")" class="btn btn-sm btn-warning">Voir</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services disponibles -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3 class="mb-3">Services Disponibles</h3>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <!-- E-Learning -->
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-play-circle"></i> E-Learning</h5>
+                </div>
+                <div class="card-body">
+                    <p>Accedez a nos modules video theoriques et demonstratifs, exercices et solutionnaires.</p>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-check-circle text-success"></i> Modules video</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Exercices pratiques</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Solutionnaires</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Quiz d'evaluation</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("MesCours", "Cours")" class="btn btn-primary w-100">
+                        <i class="bi bi-arrow-right"></i> Acceder aux Cours
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Questions-Reponses -->
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-chat-left-quote"></i> Questions-Reponses</h5>
+                </div>
+                <div class="card-body">
+                    <p>Posez vos questions et recevez des reponses de tuteurs specialises.</p>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-check-circle text-success"></i> Reponse en 2 heures (abonnes)</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Tuteurs specialises</li>
+                        <li><i class="bi bi-check-circle text-success"></i> FAQ archivee</li>
+                        <li><i class="bi bi-check-circle text-success"></i> 2$ par question (non-abonnes)</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("MesQuestions", "Etudiant")" class="btn btn-info w-100">
+                        <i class="bi bi-arrow-right"></i> Mes Questions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <!-- Clavardage -->
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-chat-dots"></i> Clavardage en Temps Reel</h5>
+                </div>
+                <div class="card-body">
+                    <p>Discutez directement avec un tuteur disponible.</p>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-check-circle text-success"></i> Sessions illimitees (abonnes)</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Session immediate : 5$</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Duree max : 1 heure</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Historique des conversations</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    @if (Model.AbonnementActif)
+                    {
+                       <a href="@Url.Action("Index", "Message")" class="btn btn-success w-100"><i class="bi bi-arrow-right"></i>
+                         Messages
+                    </a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("SessionImmediate", "Payment")" class="btn btn-success w-100">
+                            <i class="bi bi-arrow-right"></i> Session Immediate (5$)
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Rencontres Physiques -->
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-geo-alt"></i> Rencontres Physiques</h5>
+                </div>
+                <div class="card-body">
+                    <p>Rencontrez un tuteur en personne pour une aide personnalisee.</p>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-check-circle text-success"></i> Tarif preferentiel (abonnes)</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Flexible selon votre emploi du temps</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Lieu au choix</li>
+                        <li><i class="bi bi-check-circle text-success"></i> evaluation du tuteur</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("Demander", "RencontrePhysique")" class="btn btn-warning w-100">
+                        <i class="bi bi-arrow-right"></i> Reserver une Rencontre
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="bi bi-question-circle"></i> FAQ - Questions Frequemment Posees</h5>
+                </div>
+                <div class="card-body">
+                    <p>Consultez notre base de connaissances avec des milliers de questions resolues.</p>
+                    <a href="@Url.Action("Index", "FAQ")" class="btn btn-secondary">
+                        <i class="bi bi-search"></i> Consulter la FAQ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historique des transactions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-receipt"></i> Historique des Paiements</h5>
+                </div>
+                <div class="card-body">
+                    <p>Consultez vos transactions et factures.</p>
+                    <a href="@Url.Action("Historique", "Payment")" class="btn btn-dark">
+                        <i class="bi bi-arrow-right"></i> Voir l'Historique
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

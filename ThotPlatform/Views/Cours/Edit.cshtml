@@ -1,0 +1,92 @@
+@model ThotPlatform.Models.Cours
+
+@{
+    ViewBag.Title = "Modifier le cours";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark">
+                <h3 class="mb-0">Modifier le cours</h3>
+            </div>
+            <div class="card-body p-4">
+                @using (Html.BeginForm("Edit", "Cours", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.CoursId)
+                    @Html.HiddenFor(m => m.TuteurId)
+                    @Html.HiddenFor(m => m.DateCreation)
+                    @Html.HiddenFor(m => m.Code)
+                    @Html.HiddenFor(m => m.NombreModules)
+                    @Html.HiddenFor(m => m.ImageCouverture)
+                    @Html.HiddenFor(m => m.NombreInscrits)
+                    @Html.HiddenFor(m => m.NoteMoyenne)
+                    
+                    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.DomaineId, "Domaine", new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.DomaineId, (SelectList)ViewBag.Domaines, "Selectionnez un domaine", new { @class = "form-select" })
+                        @Html.ValidationMessageFor(m => m.DomaineId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Nom, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Nom, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Nom, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Description, new { @class = "form-label" })
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 5 })
+                        @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.Niveau, new { @class = "form-label" })
+                            @Html.EnumDropDownListFor(m => m.Niveau, "Selectionnez un niveau", new { @class = "form-select" })
+                            @Html.ValidationMessageFor(m => m.Niveau, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.DureeEstimeeHeures, "Duree (heures)", new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.DureeEstimeeHeures, new { @class = "form-control", type = "number", min = "1", step = "0.5" })
+                            @Html.ValidationMessageFor(m => m.DureeEstimeeHeures, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Image de couverture (optionnel)</label>
+                        @if (!string.IsNullOrEmpty(Model.ImageCouverture))
+                        {
+                            <div class="mb-2">
+                                <img src="@Url.Content(Model.ImageCouverture)" alt="Image actuelle" class="img-thumbnail" style="max-width: 200px; max-height: 150px;" />
+                                <p class="text-muted small mt-1">Image actuelle - Selectionnez une nouvelle image pour la remplacer</p>
+                            </div>
+                        }
+                        <input type="file" name="image" class="form-control" accept="image/*" />
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        @Html.CheckBoxFor(m => m.EstPublie, new { @class = "form-check-input" })
+                        @Html.LabelFor(m => m.EstPublie, "Cours publie", new { @class = "form-check-label" })
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning btn-lg">
+                            Enregistrer les modifications
+                        </button>
+                        <a href="@Url.Action("Details", "Cours", new { id = Model.CoursId })" class="btn btn-outline-secondary">Annuler</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

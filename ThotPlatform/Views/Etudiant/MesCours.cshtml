@@ -1,0 +1,135 @@
+@model List<ThotPlatform.Models.InscriptionCours>
+
+@{
+    ViewBag.Title = "Mes Cours";
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", "Etudiant")" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour au tableau de bord
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2><i class="bi bi-book"></i> Mes Cours</h2>
+        <p class="text-muted">Accedez a vos cours et suivez votre progression</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="@Url.Action("Index", "Cours")" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Decouvrir plus de cours
+        </a>
+    </div>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">
+        <h5><i class="bi bi-info-circle"></i> Aucun cours inscrit</h5>
+        <p>Vous n'etes inscrit a aucun cours pour le moment. Explorez notre catalogue pour commencer votre apprentissage !</p>
+        <a href="@Url.Action("Index", "Cours")" class="btn btn-primary mt-2">
+            <i class="bi bi-search"></i> Explorer les cours
+        </a>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var inscription in Model)
+        {
+            var progression = inscription.ProgressionsModules.Count > 0 
+                ? (int)(inscription.ProgressionsModules.Count(p => p.EstComplete) * 100.0 / inscription.Cours.NombreModules)
+                : 0;
+
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm hover-shadow">
+                    @if (!string.IsNullOrEmpty(inscription.Cours.ImageCouverture))
+                    {
+                        <img src="@Url.Content(inscription.Cours.ImageCouverture)" class="card-img-top" alt="@inscription.Cours.Nom" style="height: 200px; object-fit: cover;">
+                    }
+                    else
+                    {
+                        <div class="card-img-top bg-primary d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="bi bi-book text-white" style="font-size: 4rem;"></i>
+                        </div>
+                    }
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">@inscription.Cours.Nom</h5>
+                        <p class="card-text text-muted small">
+                            <i class="bi bi-person"></i> @inscription.Cours.Tuteur.NomComplet
+                        </p>
+                        <p class="card-text small">
+                            @if (!string.IsNullOrEmpty(inscription.Cours.Description))
+                            {
+                                @(inscription.Cours.Description.Length > 100 ? inscription.Cours.Description.Substring(0, 100) + "..." : inscription.Cours.Description)
+                            }
+                        </p>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small class="text-muted">Progression</small>
+                                <small class="text-muted">@progression%</small>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar @(progression == 100 ? "bg-success" : "bg-primary")" 
+                                     role="progressbar" 
+                                     style="width: @progression%" 
+                                     aria-valuenow="@progression" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small class="text-muted">
+                                <i class="bi bi-collection"></i> @inscription.Cours.NombreModules modules
+                            </small>
+                            <small class="text-muted">
+                                <i class="bi bi-clock"></i> @inscription.Cours.DureeEstimeeHeures h
+                            </small>
+                        </div>
+
+                        @if (progression == 100)
+                        {
+                            <span class="badge bg-success mb-2">
+                                <i class="bi bi-check-circle"></i> Termine
+                            </span>
+                        }
+                        else if (progression > 0)
+                        {
+                            <span class="badge bg-info mb-2">
+                                <i class="bi bi-play-circle"></i> En cours
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary mb-2">
+                                <i class="bi bi-bookmark"></i> Nouveau
+                            </span>
+                        }
+                    </div>
+                    
+                    <div class="card-footer bg-white">
+                        <a href="@Url.Action("VoirCours", "Etudiant", new { id = inscription.CoursId })" class="btn btn-primary w-100">
+                            <i class="bi bi-play-circle"></i> Continuer le cours
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<style>
+    .hover-shadow {
+        transition: all 0.3s ease;
+    }
+    
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+    }
+</style>
+

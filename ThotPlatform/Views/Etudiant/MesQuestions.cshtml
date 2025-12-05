@@ -1,0 +1,98 @@
+@model List<ThotPlatform.Models.Question>
+
+@{
+    ViewBag.Title = "Mes Questions";
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", "Etudiant")" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour au tableau de bord
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2><i class="bi bi-question-circle"></i> Mes Questions</h2>
+        <p class="text-muted">Consultez toutes les questions que vous avez posees</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="@Url.Action("Create", "Question")" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Poser une nouvelle question
+        </a>
+    </div>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">
+        <h5><i class="bi bi-info-circle"></i> Aucune question posee</h5>
+        <p>Vous n'avez pas encore pose de question. N'hesitez pas a demander de l'aide !</p>
+        <a href="@Url.Action("Create", "Question")" class="btn btn-primary mt-2">
+            <i class="bi bi-plus-circle"></i> Poser ma premiere question
+        </a>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var question in Model)
+        {
+            var nombreReponses = question.Reponses.Count(r => r.EstValidee);
+            var aReponse = nombreReponses > 0;
+            var estPrioritaire = question.EstPrioritaire && !aReponse;
+
+            <div class="col-12 mb-3">
+                <div class="card @(estPrioritaire ? "border-danger" : "")">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title">
+                                    @if (estPrioritaire)
+                                    {
+                                        <span class="badge bg-danger me-2">
+                                            <i class="bi bi-exclamation-triangle"></i> PRIORITAIRE
+                                        </span>
+                                    }
+                                    @question.Titre
+                                </h5>
+                                <p class="card-text text-muted">
+                                    @(question.Contenu.Length > 200 ? question.Contenu.Substring(0, 200) + "..." : question.Contenu)
+                                </p>
+                                <div class="d-flex gap-3 flex-wrap">
+                                    <small class="text-muted">
+                                        <i class="bi bi-bookmark"></i> @question.Domaine.Nom
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar"></i> @question.DateCreation.ToString("dd/MM/yyyy HH:mm")
+                                    </small>
+                                    <small class="@(aReponse ? "text-success" : "text-warning")">
+                                        <i class="bi @(aReponse ? "bi-check-circle-fill" : "bi-clock")"></i>
+                                        @nombreReponses reponse@(nombreReponses > 1 ? "s" : "")
+                                    </small>
+                                    @if (question.EstPrioritaire)
+                                    {
+                                        var tempsRestant = question.DateLimiteReponse - DateTime.Now;
+                                        if (tempsRestant.TotalMinutes > 0)
+                                        {
+                                            <small class="text-danger">
+                                                <i class="bi bi-clock-history"></i>
+                                                Expire dans @((int)tempsRestant.TotalMinutes) min
+                                            </small>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="ms-3">
+                                <a href="@Url.Action("Details", "Question", new { id = question.QuestionId })" 
+                                   class="btn btn-outline-primary">
+                                    <i class="bi bi-eye"></i> Voir
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+

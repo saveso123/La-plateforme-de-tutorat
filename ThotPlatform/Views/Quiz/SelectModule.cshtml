@@ -1,0 +1,82 @@
+﻿@model IEnumerable<ThotPlatform.Models.Module>
+
+@{
+    ViewBag.Title = "Creer un Quiz - Selectionner un Module";
+    var modulesGroupes = Model != null ? Model.GroupBy(m => m.Cours).OrderBy(g => g.Key.Nom).ToList() : new List<IGrouping<ThotPlatform.Models.Cours, ThotPlatform.Models.Module>>();
+}
+
+<div class="container mt-4">
+    <a href="@Url.Action("Index", "Tuteur")" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Retour
+    </a>
+
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="bi bi-plus-circle"></i> Creer un Quiz</h3>
+                    <p class="mb-0 mt-2">Selectionnez un module pour creer un quiz</p>
+                </div>
+            </div>
+
+            @if (modulesGroupes.Any())
+            {
+                foreach (var groupe in modulesGroupes)
+                {
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-book"></i> @groupe.Key.Nom
+                            </h5>
+                            <small>@groupe.Key.Code @(groupe.Key.Domaine != null ? "| " + groupe.Key.Domaine.Nom : "")</small>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @foreach(var module in groupe.OrderBy(m => m.Ordre))
+                                {
+                                    <div class="col-md-6 mb-3">
+                                        <a href="@Url.Action("Create", "Quiz", new { moduleId = module.ModuleId })" class="card h-100 shadow-sm text-decoration-none text-dark hover-shadow" style="transition: all 0.3s ease;">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="card-title mb-2">
+                                                            <i class="bi bi-layers"></i> Module @module.Ordre
+                                                        </h6>
+                                                        <p class="card-text mb-2 fw-bold">@module.Titre</p>
+                                                        <small class="text-muted">@module.Description</small>
+                                                        <br />
+                                                        <small class="text-muted mt-2 d-block">
+                                                            <i class="bi bi-clock"></i> @module.DureeMinutes min
+                                                        </small>
+                                                    </div>
+                                                    <div class="ms-2">
+                                                        <i class="bi bi-arrow-right text-primary fs-5"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-info shadow-sm">
+                    <h5><i class="bi bi-info-circle"></i> Aucun module disponible</h5>
+                    <p class="mb-0">Vous n'avez pas encore cree de modules. Creez d'abord un module avant de pouvoir creer un quiz.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-shadow:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+        transform: translateY(-2px);
+    }
+</style>
+

@@ -1,0 +1,105 @@
+@model ThotPlatform.Models.Message
+
+@{
+    ViewBag.Title = Model.Sujet;
+    var userId = (int)Session["UserId"];
+    var estDestinataire = Model.DestinatireId == userId;
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", "Message")" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour a la messagerie
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header @(estDestinataire ? "bg-primary" : "bg-success") text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="bi @(estDestinataire ? "bi-envelope-open" : "bi-send")"></i>
+                        @Model.Sujet
+                    </h4>
+                    @if (Model.EstLu && estDestinataire)
+                    {
+                        <span class="badge bg-light text-dark">
+                            <i class="bi bi-check2-all"></i> Lu le @Model.DateLecture?.ToString("dd/MM/yyyy HH:mm")
+                        </span>
+                    }
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Informations du message -->
+                <div class="mb-4 pb-3 border-bottom">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-2">
+                                <strong><i class="bi bi-person-fill"></i> De:</strong>
+                                <span class="ms-2">@(Model.Expediteur != null ? Model.Expediteur.NomComplet : "Expediteur inconnu")</span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-2">
+                                <strong><i class="bi bi-person"></i> a:</strong>
+                                <span class="ms-2">@(Model.Destinataire != null ? Model.Destinataire.NomComplet : "Destinataire inconnu")</span>
+                            </p>
+                        </div>
+                    </div>
+                    <p class="mb-0 text-muted">
+                        <i class="bi bi-clock"></i> @Model.DateEnvoi.ToString("dd/MM/yyyy a HH:mm")
+                    </p>
+                </div>
+
+                <!-- Contenu du message -->
+                <div class="message-content mb-4">
+                    @Html.Raw(Model.Contenu.Replace("\n", "<br>"))
+                </div>
+
+                <!-- Actions -->
+                <div class="d-flex gap-2">
+                    @if (estDestinataire)
+                    {
+                        <a href="@Url.Action("Repondre", "Message", new { id = Model.MessageId })" 
+                           class="btn btn-primary">
+                            <i class="bi bi-reply"></i> Repondre
+                        </a>
+                    }
+                    <button type="button" class="btn btn-danger" onclick="supprimerMessage(@Model.MessageId)">
+                        <i class="bi bi-trash"></i> Supprimer
+                    </button>
+                    <a href="@Url.Action("Index", "Message")" class="btn btn-outline-secondary ms-auto">
+                        <i class="bi bi-arrow-left"></i> Retour
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function supprimerMessage(messageId) {
+            if (confirm('etes-vous sur de vouloir supprimer ce message ?')) {
+                $.post('@Url.Action("Supprimer", "Message")', { id: messageId }, function(data) {
+                    if (data.success) {
+                        window.location.href = '@Url.Action("Index", "Message")';
+                    } else {
+                        alert('Erreur lors de la suppression: ' + data.message);
+                    }
+                });
+            }
+        }
+    </script>
+}
+
+<style>
+    .message-content {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        line-height: 1.8;
+        min-height: 200px;
+    }
+</style>
+

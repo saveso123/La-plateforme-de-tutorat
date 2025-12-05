@@ -1,0 +1,90 @@
+@model ThotPlatform.Models.Cours
+
+@{
+    ViewBag.Title = "Crer un cours";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0"> Creer un nouveau cours</h3>
+            </div>
+            <div class="card-body p-4">
+                @using (Html.BeginForm("Create", "Cours", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Nom, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Nom, new { @class = "form-control", placeholder = "Ex: Introduction  l'algbre linaire" })
+                        @Html.ValidationMessageFor(m => m.Nom, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Code, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Code, new { @class = "form-control", placeholder = "Ex: MATH101" })
+                        @Html.ValidationMessageFor(m => m.Code, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Description, new { @class = "form-label" })
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 4, placeholder = "Description detaillee du cours..." })
+                        @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.DomaineId, "Domaine", new { @class = "form-label" })
+                            @Html.DropDownListFor(m => m.DomaineId, (SelectList)ViewBag.Domaines, "Selectionnez un domaine", new { @class = "form-select" })
+                            @Html.ValidationMessageFor(m => m.DomaineId, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.Niveau, new { @class = "form-label" })
+                            @Html.DropDownListFor(m => m.Niveau, 
+                                new SelectList(Enum.GetValues(typeof(ThotPlatform.Models.NiveauScolaire))), 
+                                "Selectionnez un niveau", 
+                                new { @class = "form-select" })
+                            @Html.ValidationMessageFor(m => m.Niveau, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.NombreModules, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.NombreModules, new { @class = "form-control", type = "number", min = "1", value = "1" })
+                            @Html.ValidationMessageFor(m => m.NombreModules, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.DureeEstimeeHeures, "Dure estime (heures)", new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.DureeEstimeeHeures, new { @class = "form-control", type = "number", step = "0.5", min = "0.5", value = "1" })
+                            @Html.ValidationMessageFor(m => m.DureeEstimeeHeures, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Image de couverture (optionnel)</label>
+                        <input type="file" name="image" class="form-control" accept="image/*" />
+                        <div class="form-text">Format recommand : 1200x600 pixels</div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-plus-circle"></i> Crer le cours
+                        </button>
+                        <a href="@Url.Action("Index", "Cours")" class="btn btn-outline-secondary">Annuler</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

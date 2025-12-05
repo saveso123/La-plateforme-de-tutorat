@@ -1,0 +1,108 @@
+﻿@model ThotPlatform.Models.Quiz
+
+@{
+    ViewBag.Title = "Creer un Quiz";
+}
+
+<div class="container mt-4">
+    <a href="@Url.Action("Index", "Quiz")" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Retour
+    </a>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Creer un Quiz</h4>
+                    <small>@ViewBag.CoursNom - @ViewBag.ModuleNom</small>
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm("Create", "Quiz", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group mb-3">
+                            <label for="Titre" class="form-label"><strong>Titre du Quiz</strong></label>
+                            @Html.TextBoxFor(m => m.Titre, new { @class = "form-control", placeholder = "Ex: Quiz sur les bases" })
+                            @Html.ValidationMessageFor(m => m.Titre, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="Description" class="form-label"><strong>Description</strong></label>
+                            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 3, placeholder = "Decrivez le contenu du quiz" })
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="DureeLimiteMinutes" class="form-label"><strong>Duree limite (minutes)</strong></label>
+                                    @Html.TextBoxFor(m => m.DureeLimiteMinutes, new { @class = "form-control", type = "number", placeholder = "Ex: 30" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="NotePassage" class="form-label"><strong>Note de passage (%)</strong></label>
+                                    @Html.TextBoxFor(m => m.NotePassage, new { @class = "form-control", type = "number", value = "60" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="NombreTentativesAutorisees" class="form-label"><strong>Nombre de tentatives</strong></label>
+                                    @Html.TextBoxFor(m => m.NombreTentativesAutorisees, new { @class = "form-control", type = "number", value = "3" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="OrdreAleatoire" name="OrdreAleatoire" value="true">
+                            <label class="form-check-label" for="OrdreAleatoire">
+                                <strong>Ordre aleatoire des questions</strong>
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="AfficherReponses" name="AfficherReponses" value="true" checked>
+                            <label class="form-check-label" for="AfficherReponses">
+                                <strong>Afficher les reponses apres le quiz</strong>
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input type="checkbox" class="form-check-input" id="EstPublie" name="EstPublie" value="true">
+                            <label class="form-check-label" for="EstPublie">
+                                <strong>Publier ce quiz</strong>
+                                <small class="d-block text-muted">Les etudiants pourront acceder a ce quiz</small>
+                            </label>
+                        </div>
+
+                        <hr />
+
+                        <div class="alert alert-info">
+                            <h6><i class="bi bi-info-circle"></i> Creer les questions</h6>
+                            <p class="mb-0">Apres avoir cree le quiz, vous pourrez ajouter les questions et les choix de reponses.</p>
+                        </div>
+
+                        @Html.HiddenFor(m => m.ModuleId)
+
+                        <div class="d-flex justify-content-between">
+                            <a href="@Url.Action("Index", "Quiz")" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Creer le Quiz et ajouter les questions
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

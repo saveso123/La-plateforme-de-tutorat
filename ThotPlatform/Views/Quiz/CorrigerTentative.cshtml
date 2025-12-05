@@ -1,0 +1,187 @@
+@model ThotPlatform.Models.TentativeQuiz
+
+@{
+    ViewBag.Title = "Corriger la tentative";
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Details", "Quiz", new { id = Model.QuizId })" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour au quiz
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>Correction de tentative</h2>
+        <p class="text-muted">
+            etudiant : <strong>@(Model.Etudiant != null ? Model.Etudiant.Prenom + " " + Model.Etudiant.Nom : "Etudiant inconnu")</strong> | 
+            Quiz : <strong>@Model.Quiz.Titre</strong> | 
+            Date : <strong>@Model.DateDebut.ToString("dd/MM/yyyy HH:mm")</strong>
+        </p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center bg-primary text-white">
+            <div class="card-body">
+                <h5>@Model.NoteObtenue%</h5>
+                <p class="mb-0">Note actuelle</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-info text-white">
+            <div class="card-body">
+                <h5>@Model.Quiz.Questions.Count</h5>
+                <p class="mb-0">Questions</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-success text-white">
+            <div class="card-body">
+                <h5>@Model.Reponses.Count(r => r.EstCorrecte)</h5>
+                <p class="mb-0">Reponses correctes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-warning text-white">
+            <div class="card-body">
+                <h5>@Model.Reponses.Count(r => r.ReponseTexte != null)</h5>
+                <p class="mb-0">Reponses libres</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Reponses de l'etudiant</h5>
+            </div>
+            <div class="card-body">
+                @foreach (var question in Model.Quiz.Questions.OrderBy(q => q.Ordre))
+                {
+                    var reponse = Model.Reponses.FirstOrDefault(r => r.QuestionQuizId == question.QuestionQuizId);
+                    
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <strong>Question @question.Ordre :</strong> @question.Texte
+                                <span class="badge bg-info float-end">@question.Points pts</span>
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            @if (question.Type == ThotPlatform.Models.TypeQuestionQuiz.ChoixMultiple || 
+                                 question.Type == ThotPlatform.Models.TypeQuestionQuiz.VraiFaux)
+                            {
+                                <p><strong>Type :</strong> Choix multiple / Vrai-Faux</p>
+                                <p><strong>Reponse correcte :</strong> @question.Choix.FirstOrDefault(c => c.EstCorrect)?.Texte</p>
+                                
+                                if (reponse != null && reponse.ChoixId.HasValue)
+                                {
+                                    var choixEtudiant = question.Choix.FirstOrDefault(c => c.ChoixId == reponse.ChoixId);
+                                    <p>
+                                        <strong>Reponse de l'etudiant :</strong> 
+                                        @choixEtudiant?.Texte
+                                        if (reponse.EstCorrecte)
+                                        {
+                                            <span class="badge bg-success">✓ Correcte</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">✗ Incorrecte</span>
+                                        }
+                                    </p>
+                                }
+                            }
+                            else if (question.Type == ThotPlatform.Models.TypeQuestionQuiz.ReponseCourte || 
+                                     question.Type == ThotPlatform.Models.TypeQuestionQuiz.ReponseLongue)
+                            {
+                                <p><strong>Type :</strong> Reponse libre</p>
+                                
+                                if (reponse != null && !string.IsNullOrEmpty(reponse.ReponseTexte))
+                                {
+                                    <div class="alert alert-light border">
+                                        <p><strong>Reponse de l'etudiant :</strong></p>
+                                        <p>@reponse.ReponseTexte</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label><strong>Points a accorder :</strong></label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control points-input" 
+                                                   data-reponse-id="@reponse.ReponseQuizId" 
+                                                   value="@(reponse.PointsAccordes ?? 0)" 
+                                                   min="0" max="@question.Points" />
+                                            <span class="input-group-text">/ @question.Points</span>
+                                            <button class="btn btn-primary save-points" data-reponse-id="@reponse.ReponseQuizId">
+                                                Enregistrer
+                                            </button>
+                                        </div>
+                                        <small class="text-muted">Points actuels : @(reponse.PointsAccordes ?? 0)</small>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p class="text-muted"><em>Aucune reponse fournie par l'etudiant.</em></p>
+                                }
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <form method="post" action="@Url.Action("FinalisierCorrection", "Quiz")">
+                <input type="hidden" name="tentativeId" value="@Model.TentativeId" />
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="bi bi-check-circle"></i> Finaliser la correction
+                </button>
+                <a href="@Url.Action("Details", "Quiz", new { id = Model.QuizId })" class="btn btn-outline-secondary btn-lg">
+                    Annuler
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.save-points').click(function() {
+                var btn = $(this);
+                var reponseId = btn.data('reponse-id');
+                var points = btn.closest('.input-group').find('.points-input').val();
+
+                $.ajax({
+                    url: '@Url.Action("EnregistrerCorrection", "Quiz")',
+                    type: 'POST',
+                    data: {
+                        reponseQuizId: reponseId,
+                        pointsAccordes: points
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            btn.closest('.form-group').find('small').text('Points enregistres : ' + points);
+                            btn.addClass('btn-success').removeClass('btn-primary');
+                            setTimeout(function() {
+                                btn.removeClass('btn-success').addClass('btn-primary');
+                            }, 2000);
+                        } else {
+                            alert('Erreur : ' + response.message);
+                        }
+                    },
+                    error: function() {
+                        alert('Erreur lors de l\'enregistrement');
+                    }
+                });
+            });
+        });
+    </script>
+}
+

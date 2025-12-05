@@ -1,0 +1,75 @@
+﻿@model IEnumerable<ThotPlatform.Models.SessionClavardage>
+
+@{
+    ViewBag.Title = "Sessions en Attente";
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("MesSessions", "Chat")" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour a mes sessions
+    </a>
+</div>
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-hourglass-split"></i> Sessions en Attente</h2>
+            <p class="text-muted">Clavardages en attente de votre confirmation</p>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var session in Model)
+            {
+                <div class="col-md-6 mb-3">
+                    <div class="card shadow-sm h-100 border-warning">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">
+                                <i class="bi bi-chat-dots"></i>
+                                @session.Domaine.Nom
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>etudiant :</strong> @session.Etudiant.Prenom @session.Etudiant.Nom</p>
+                            <p><strong>Email :</strong> @session.Etudiant.Email</p>
+                            <p><strong>Type :</strong> 
+                                <span class="badge @(session.Type == ThotPlatform.Models.TypeSession.Immediate ? "bg-danger" : "bg-info")">
+                                    @session.Type
+                                </span>
+                            </p>
+                            <p><strong>Date demandee :</strong> @session.DateDebut.ToString("dd/MM/yyyy HH:mm")</p>
+                            <p><strong>Cout :</strong> @session.Cout.ToString("C")</p>
+                            <p><strong>Demandee depuis :</strong> @((DateTime.Now - session.DateDebut).TotalMinutes.ToString("F0")) minutes</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="@Url.Action("Session", "Chat", new { id = session.SessionId })" class="btn btn-primary btn-sm">
+                                <i class="bi bi-chat"></i> Accepter et Discuter
+                            </a>
+                            <form method="post" action="@Url.Action("EndSession", "Chat")" style="display: inline;">
+                                <input type="hidden" name="sessionId" value="@session.SessionId" />
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('etes-vous sur ?')">
+                                    <i class="bi bi-x-circle"></i> Refuser
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h5><i class="bi bi-info-circle"></i> Aucune session en attente</h5>
+            <p class="mb-0">Vous n'avez pas de sessions de clavardage en attente de confirmation.</p>
+        </div>
+    }
+
+    <div class="text-center mt-4">
+        <a href="@Url.Action("MesSessions", "Chat")" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Retour a mes sessions
+        </a>
+    </div>
+</div>

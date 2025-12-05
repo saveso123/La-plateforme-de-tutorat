@@ -1,0 +1,175 @@
+@model ThotPlatform.ViewModels.CoursEtudiantViewModel
+
+@{
+    ViewBag.Title = Model.Cours.Nom;
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("MesCours", "Etudiant")" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour a mes cours
+    </a>
+</div>
+
+<div class="row">
+    <!-- Sidebar avec liste des modules -->
+    <div class="col-md-4 col-lg-3 mb-4">
+        <div class="card shadow-sm sticky-top" style="top: 20px;">
+            <div class="card-header bg-primary text-white">
+                <h6 class="mb-0"><i class="bi bi-list-ul"></i> Contenu du cours</h6>
+            </div>
+            <div class="list-group list-group-flush" style="max-height: 70vh; overflow-y: auto;">
+                @if (Model.Modules != null && Model.Modules.Count > 0)
+                {
+                    foreach (var module in Model.Modules.OrderBy(m => m.Ordre))
+                    {
+                        var progression = Model.Progressions.FirstOrDefault(p => p.ModuleId == module.ModuleId);
+                        var estComplete = progression?.EstComplete ?? false;
+                        var estActif = Model.ModuleActuel?.ModuleId == module.ModuleId;
+
+                        <a href="@Url.Action("VoirModule", "Etudiant", new { coursId = Model.Cours.CoursId, moduleId = module.ModuleId })" 
+                           class="list-group-item list-group-item-action @(estActif ? "active" : "")">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-bold">
+                                        @if (estComplete)
+                                        {
+                                            <i class="bi bi-check-circle-fill text-success"></i>
+                                        }
+                                        else if (progression != null && progression.TempsPasseMinutes > 0)
+                                        {
+                                            <i class="bi bi-play-circle text-info"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-circle"></i>
+                                        }
+                                        Module @module.Ordre
+                                    </div>
+                                    <small class="@(estActif ? "text-white-50" : "text-muted")">@module.Titre</small>
+                                </div>
+                                <small class="@(estActif ? "text-white-50" : "text-muted")">
+                                    @module.DureeMinutes min
+                                </small>
+                            </div>
+                        </a>
+                    }
+                }
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between mb-1">
+                    <small>Progression globale</small>
+                    <small>@Model.ProgressionGlobale%</small>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-success" 
+                         role="progressbar" 
+                         style="width: @Model.ProgressionGlobale%" 
+                         aria-valuenow="@Model.ProgressionGlobale" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100">
+                    </div>
+                </div>
+                <a href="@Url.Action("Quiz", "Etudiant", new { id = Model.Cours.CoursId })" class="btn btn-warning w-100">
+                    <i class="bi bi-question-circle"></i> Voir les Quiz
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="col-md-8 col-lg-9">
+        <div class="mb-3">
+            <a href="@Url.Action("Quiz", "Etudiant", new { id = Model.Cours.CoursId })" class="btn btn-warning">
+                <i class="bi bi-question-circle"></i> Voir les Quiz du Cours
+            </a>
+        </div>
+        @if (Model.Modules == null || Model.Modules.Count == 0)
+        {
+            <div class="alert alert-info">
+                <h5>Aucun module disponible</h5>
+                <p>Ce cours n'a pas encore de modules. Veuillez revenir plus tard.</p>
+            </div>
+        }
+        else if (Model.ModuleActuel != null)
+        {
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0">@Model.ModuleActuel.Titre</h4>
+                    <p class="text-muted mb-0 mt-2">@Model.ModuleActuel.Description</p>
+                </div>
+                <div class="card-body p-0">
+                    <!-- Video theorique -->
+                    @if (!string.IsNullOrEmpty(Model.ModuleActuel.VideoTheorique))
+                    {
+                        <div class="p-3 bg-light border-bottom">
+                            <h6><i class="bi bi-camera-video"></i> Video theorique</h6>
+                            <div class="ratio ratio-16x9 mb-3">
+                                <video controls class="w-100" id="videoTheorique">
+                                    <source src="@Url.Content(Model.ModuleActuel.VideoTheorique)" type="video/mp4">
+                                    Votre navigateur ne supporte pas la lecture de videos.
+                                </video>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Video demonstrative -->
+                    @if (!string.IsNullOrEmpty(Model.ModuleActuel.VideoDemonstrative))
+                    {
+                        <div class="p-3 bg-light border-bottom">
+                            <h6><i class="bi bi-camera-video-fill"></i> Video demonstrative</h6>
+                            <div class="ratio ratio-16x9 mb-3">
+                                <video controls class="w-100" id="videoDemonstrative">
+                                    <source src="@Url.Content(Model.ModuleActuel.VideoDemonstrative)" type="video/mp4">
+                                    Votre navigateur ne supporte pas la lecture de videos.
+                                </video>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Contenu texte -->
+                    @if (!string.IsNullOrEmpty(Model.ModuleActuel.ContenuTexte))
+                    {
+                        <div class="p-4">
+                            <h6><i class="bi bi-file-text"></i> Notes de cours</h6>
+                            <div class="content-text">
+                                @Html.Raw(Model.ModuleActuel.ContenuTexte)
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Bouton pour voir plus de details -->
+            <div class="text-center">
+                <a href="@Url.Action("Details", "Module", new { id = Model.ModuleActuel.ModuleId })" class="btn btn-primary">
+                    <i class="bi bi-arrow-right"></i> Voir tous les details du module
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                <h5><i class="bi bi-info-circle"></i> Selectionnez un module</h5>
+                <p>Choisissez un module dans la liste a gauche pour commencer votre apprentissage.</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function marquerComplete() {
+            $.post('@Url.Action("MarquerModuleComplete", "Etudiant")', {
+                moduleId: @(Model.ModuleActuel?.ModuleId ?? 0)
+            }, function(data) {
+                if (data.success) {
+                    alert('Module marque comme complete !');
+                    location.reload();
+                } else {
+                    alert('Erreur : ' + data.message);
+                }
+            });
+        }
+    </script>
+}
+

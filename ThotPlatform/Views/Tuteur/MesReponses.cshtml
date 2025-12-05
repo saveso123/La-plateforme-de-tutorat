@@ -1,0 +1,53 @@
+@model IEnumerable<ThotPlatform.ViewModels.ReponseViewModel>
+
+@{
+    ViewBag.Title = "Mes Reponses";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>Mes Reponses</h2>
+            <p class="text-muted">Historique de toutes vos reponses aux questions des etudiants</p>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var reponse in Model)
+            {
+                <div class="col-12 mb-3">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Reponse</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-2"><i class="bi bi-chat-left-text"></i> Votre reponse :</h6>
+                                <p class="mb-0">@(reponse.Contenu ?? "Pas de contenu")</p>
+                            </div>
+                            <hr />
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted"><i class="bi bi-person"></i> @(reponse.EtudiantNom ?? "Etudiant")</small>
+                                <span class="badge bg-primary"><i class="bi bi-calendar"></i> @reponse.DateCreation.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h5>Aucune reponse</h5>
+            <p class="mb-0">Vous n'avez pas encore repondu a des questions.</p>
+        </div>
+    }
+
+    <div class="text-center mt-4">
+        <a href="@Url.Action("Index", "Tuteur")" class="btn btn-outline-secondary">Retour au tableau de bord</a>
+    </div>
+</div>
+

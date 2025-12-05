@@ -1,0 +1,109 @@
+@{
+    ViewBag.Title = "Abonnement mensuel";
+    var montant = ViewBag.Montant;
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", "Etudiant")" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour au tableau de bord
+    </a>
+</div>
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+        <div class="card shadow-lg">
+            <div class="card-header bg-warning text-dark text-center py-4">
+                <h2 class="mb-0"> Abonnement Mensuel Thot</h2>
+            </div>
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <h1 class="display-3 text-primary">@montant $</h1>
+                    <p class="text-muted">par mois</p>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5> Avantages inclus :</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"> <strong>Questions illimites</strong></li>
+                            <li class="mb-2"> <strong>Rponse garantie sous 2h</strong></li>
+                            <li class="mb-2"> <strong>Sessions de clavardage</strong> (max 1h, dlai 2h)</li>
+                            <li class="mb-2"> <strong>Accs complet  la FAQ</strong></li>
+                            <li class="mb-2"> <strong>Tarif prfrentiel</strong> pour rencontres physiques</li>
+                            <li class="mb-2"> <strong>Support prioritaire</strong></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5> Pourquoi s'abonner ?</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"> Aide illimite dans tous les domaines</li>
+                            <li class="mb-2"> Tuteurs qualifis et vrifis</li>
+                            <li class="mb-2"> Rponses rapides garanties</li>
+                            <li class="mb-2"> conomies importantes vs questions ponctuelles</li>
+                            <li class="mb-2"> Meilleure russite acadmique</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="alert alert-info">
+                    <h6> Informations importantes</h6>
+                    <ul class="mb-0">
+                        <li>Abonnement renouvelable chaque mois</li>
+                        <li>Annulation possible  tout moment</li>
+                        <li>Paiement scuris via PayPal</li>
+                        <li>Activation immdiate aprs paiement</li>
+                    </ul>
+                </div>
+
+                @using (Html.BeginForm("CreateAbonnement", "Payment", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning btn-lg py-3">
+                            <i class="bi bi-credit-card"></i> S'abonner maintenant avec PayPal
+                        </button>
+                    </div>
+                }
+
+                <div class="text-center mt-3">
+                    <small class="text-muted">
+                        Vous serez redirig vers PayPal pour finaliser le paiement de manire scurise
+                    </small>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <a href="@Url.Action("Index", "Home")" class="text-muted"> Retour  l'accueil</a>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h1 class="text-primary"></h1>
+                        <h6>Questions illimites</h6>
+                        <p class="text-muted small">Posez autant de questions que ncessaire</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h1 class="text-success">2h</h1>
+                        <h6>Reponse garantie</h6>
+                        <p class="text-muted small">Obtenez une reponse en moins de 2 heures</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h1 class="text-warning"></h1>
+                        <h6>conomies</h6>
+                        <p class="text-muted small">Rentabilis ds 9 questions par mois</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

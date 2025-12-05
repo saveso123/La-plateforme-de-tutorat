@@ -1,0 +1,246 @@
+@model IEnumerable<ThotPlatform.Models.Question>
+
+@{
+    ViewBag.Title = "Questions Urgentes";
+}
+
+<style>
+    .urgent-container {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        min-height: 100vh;
+        padding: 40px 0;
+    }
+
+    .urgent-header {
+        background: rgba(255,255,255,0.95);
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        text-align: center;
+    }
+
+    .urgent-header h1 {
+        color: #ff6b6b;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .urgent-header .alert-text {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .urgent-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-left: 6px solid #ff6b6b;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        animation: pulse 2s infinite;
+        transition: all 0.3s;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            box-shadow: 0 5px 20px rgba(255,107,107,0.3);
+        }
+        50% {
+            box-shadow: 0 5px 30px rgba(255,107,107,0.6);
+        }
+    }
+
+    .urgent-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(255,107,107,0.4);
+    }
+
+    .time-remaining {
+        display: inline-block;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    .time-remaining.critical {
+        background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+        animation: blink 0.5s infinite;
+    }
+
+    .question-title-urgent {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #333;
+        margin: 15px 0;
+    }
+
+    .btn-repondre-urgent {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        color: white;
+        padding: 12px 30px;
+        border-radius: 25px;
+        border: none;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-repondre-urgent:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(255,107,107,0.5);
+        color: white;
+    }
+
+    .stats-urgent {
+        display: flex;
+        justify-content: space-around;
+        background: rgba(255,255,255,0.95);
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+    }
+
+    .stat-urgent {
+        text-align: center;
+    }
+
+    .stat-urgent-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #ff6b6b;
+    }
+
+    .stat-urgent-label {
+        color: #666;
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="urgent-container">
+    <div class="container">
+        <!-- Bouton retour -->
+        <div class="mb-3">
+            <a href="@Url.Action("Index", "Question")" class="btn btn-outline-light">
+                <i class="bi bi-arrow-left"></i> Retour a la FAQ
+            </a>
+        </div>
+        
+        <!-- Header -->
+        <div class="urgent-header">
+            <h1><i class="bi bi-exclamation-triangle-fill"></i> Questions Urgentes</h1>
+            <p class="alert-text">
+                <i class="bi bi-clock-history"></i> Ces questions approchent de la limite de 2 heures
+            </p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-urgent">
+            <div class="stat-urgent">
+                <div class="stat-urgent-number">@Model.Count()</div>
+                <div class="stat-urgent-label">Questions Urgentes</div>
+            </div>
+            <div class="stat-urgent">
+                <div class="stat-urgent-number">@Model.Count(q => (q.DateLimiteReponse - DateTime.Now).TotalMinutes < 15)</div>
+                <div class="stat-urgent-label">Critiques (&lt; 15 min)</div>
+            </div>
+            <div class="stat-urgent">
+                <div class="stat-urgent-number">@Model.Count(q => q.EstPrioritaire)</div>
+                <div class="stat-urgent-label">Prioritaires</div>
+            </div>
+        </div>
+
+        <!-- Questions List -->
+        @if (Model.Any())
+        {
+            foreach (var question in Model)
+            {
+                var tempsRestant = question.DateLimiteReponse - DateTime.Now;
+                var isCritical = tempsRestant.TotalMinutes < 15;
+                
+                <div class="urgent-card">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <span class="time-remaining @(isCritical ? "critical" : "")">
+                                <i class="bi bi-alarm"></i>
+                                @if (tempsRestant.TotalMinutes > 0)
+                                {
+                                    <text>@((int)tempsRestant.TotalMinutes) min restantes</text>
+                                }
+                                else
+                                {
+                                    <text>EN RETARD !</text>
+                                }
+                            </span>
+                            @if (question.EstPrioritaire)
+                            {
+                                <span class="badge bg-danger ms-2">
+                                    <i class="bi bi-star-fill"></i> PRIORITAIRE
+                                </span>
+                            }
+                        </div>
+                        <span class="badge bg-primary">@question.Domaine.Nom</span>
+                    </div>
+
+                    <h3 class="question-title-urgent">
+                        <i class="bi bi-question-circle"></i> @question.Titre
+                    </h3>
+
+                    <p class="text-muted mb-3">
+                        @(question.Contenu.Length > 150 ? question.Contenu.Substring(0, 150) + "..." : question.Contenu)
+                    </p>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted">
+                                <i class="bi bi-person"></i> @question.Etudiant.Prenom @question.Etudiant.Nom<br>
+                                <i class="bi bi-calendar"></i> Posee le @question.DateCreation.ToString("dd/MM/yyyy HH:mm")
+                            </small>
+                        </div>
+                        <a href="@Url.Action("Answer", new { id = question.QuestionId })" class="btn-repondre-urgent">
+                            <i class="bi bi-reply-fill"></i> Repondre Maintenant
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center" style="background: white; padding: 60px; border-radius: 15px;">
+                <i class="bi bi-check-circle" style="font-size: 5rem; color: #4caf50;"></i>
+                <h3 class="mt-3">Aucune question urgente !</h3>
+                <p class="text-muted">Toutes les questions sont traitees dans les delais</p>
+                <a href="@Url.Action("QuestionsEnAttente", "Tuteur")" class="btn btn-primary mt-3">
+                    Voir toutes les questions
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Rafraichir la page toutes les 30 secondes
+        setTimeout(function() {
+            location.reload();
+        }, 30000);
+
+        // Notification sonore si questions critiques
+        var questionsCritiques = @Model.Count(q => (q.DateLimiteReponse - DateTime.Now).TotalMinutes < 15);
+        if (questionsCritiques > 0) {
+            // Vous pouvez ajouter un son d'alerte ici
+            console.log('?? ' + questionsCritiques + ' question(s) critique(s) !');
+        }
+    </script>
+}
+

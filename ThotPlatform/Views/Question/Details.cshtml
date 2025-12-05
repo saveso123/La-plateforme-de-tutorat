@@ -1,0 +1,152 @@
+@model ThotPlatform.Models.Question
+
+@{
+    ViewBag.Title = Model.Titre;
+}
+
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">@Model.Titre</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <strong>Pose par :</strong> @Model.Etudiant.NomComplet<br />
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i> @Model.DateCreation.ToString("dd/MM/yyyy HH:mm")
+                            </small>
+                        </div>
+                        <div>
+                            @if (Model.Statut == ThotPlatform.Models.StatutQuestion.Repondue)
+                            {
+                                <span class="badge bg-success">Rpondue</span>
+                            }
+                            else if (Model.Statut == ThotPlatform.Models.StatutQuestion.EnCours)
+                            {
+                                <span class="badge bg-warning">En cours</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">En attente</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <h5>Question :</h5>
+                    <p style="white-space: pre-wrap;">@Model.Contenu</p>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.FichierJoint))
+                {
+                    <div class="mb-3">
+                        <strong>Fichier joint :</strong>
+                        <a href="@Url.Content(Model.FichierJoint)" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-download"></i> Tlcharger
+                        </a>
+                    </div>
+                }
+
+                <div class="d-flex gap-2 text-muted">
+                    <span><i class="bi bi-tag"></i> @Model.Domaine.Nom</span>
+                    <span><i class="bi bi-eye"></i> @Model.NombreVues vues</span>
+                    <span><i class="bi bi-chat"></i> @Model.Reponses.Count reponse(s)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"> Rponses (@Model.Reponses.Count)</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.Reponses.Count == 0)
+                {
+                    <p class="text-muted">Aucune reponse pour le moment. Un tuteur va repondre sous peu.</p>
+                }
+                else
+                {
+                    foreach (var reponse in Model.Reponses.OrderBy(r => r.DateCreation))
+                    {
+                        <div class="border-bottom pb-3 mb-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <strong> @reponse.Tuteur.NomComplet</strong>
+                                    @if (reponse.Tuteur.NoteMoyenne > 0)
+                                    {
+                                        <span class="badge bg-warning text-dark"> @reponse.Tuteur.NoteMoyenne.ToString("F1")</span>
+                                    }
+                                    <br />
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar"></i> @reponse.DateCreation.ToString("dd/MM/yyyy HH:mm")
+                                    </small>
+                                </div>
+                                @if (reponse.EstValidee)
+                                {
+                                    <span class="badge bg-success"> Valide</span>
+                                }
+                            </div>
+                            <p style="white-space: pre-wrap;">@reponse.Contenu</p>
+                            @if (!string.IsNullOrEmpty(reponse.FichierJoint))
+                            {
+                                <a href="@Url.Content(reponse.FichierJoint)" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-download"></i> Fichier joint
+                                </a>
+                            }
+                        </div>
+                    }
+                }
+
+                @if (Session["UserType"]?.ToString() == "Tuteur" && Model.Statut != ThotPlatform.Models.StatutQuestion.Fermee)
+                {
+                    <div class="mt-4">
+                        <a href="@Url.Action("Answer", "Question", new { id = Model.QuestionId })" class="btn btn-primary">
+                            <i class="bi bi-reply"></i> Rpondre  cette question
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                <h6 class="mb-0"> Informations</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>Domaine :</strong> @Model.Domaine.Nom</p>
+                <p><strong>Statut :</strong> @Model.Statut</p>
+                <p><strong>Date limite reponse :</strong><br />@Model.DateLimiteReponse.ToString("dd/MM/yyyy HH:mm")</p>
+                @if (Model.EstPrioritaire)
+                {
+                    <span class="badge bg-danger"> Prioritaire</span>
+                }
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="mb-0"> Actions</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="@Url.Action("Index", "Question")" class="btn btn-outline-primary">
+                         Retour  la FAQ
+                    </a>
+                    @if (Session["UserType"]?.ToString() == "Etudiant")
+                    {
+                        <a href="@Url.Action("Create", "Question")" class="btn btn-outline-success">
+                             Poser une autre question
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

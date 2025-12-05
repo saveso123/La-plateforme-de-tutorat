@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Plateforme Thot</title>
+    @Styles.Render("~/Content/css")
+    <link href="~/Content/Professional.css" rel="stylesheet" />
+    <link href="~/Content/Videos.css" rel="stylesheet" />
+    <link href="~/Content/Forms.css" rel="stylesheet" />
+    <link href="~/Content/Components.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    @Scripts.Render("~/bundles/modernizr")
+    
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            try {
+                if (typeof google !== 'undefined' && google.translate) {
+                    new google.translate.TranslateElement(
+                        {
+                            pageLanguage: 'fr',
+                            includedLanguages: 'fr,en,es,pt,de,it,ja,zh-CN',
+                            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                            autoDisplay: false
+                        },
+                        'google_translate_element'
+                    );
+                }
+            } catch (e) {
+                console.log('Google Translate not available');
+            }
+        }
+        
+        // Initialiser au chargement de la page
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                googleTranslateElementInit();
+            });
+        } else {
+            googleTranslateElementInit();
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
+    <style>
+        /* Style pour le widget Google Translate - VISIBLE PARTOUT */
+        #google_translate_element {
+            display: inline-block !important;
+            visibility: visible !important;
+            padding: 8px 12px !important;
+            background: white !important;
+            border-radius: 6px !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+            margin: 0 10px !important;
+            z-index: 9999 !important;
+        }
+        
+        .goog-te-gadget-simple {
+            background-color: white !important;
+            border: 2px solid #667eea !important;
+            padding: 6px 10px !important;
+            font-size: 13px !important;
+            border-radius: 6px !important;
+            font-family: 'Open Sans', sans-serif !important;
+            display: inline-block !important;
+            visibility: visible !important;
+        }
+        
+        .goog-te-gadget-simple .goog-te-menu-value {
+            color: #2c3e50 !important;
+            font-weight: 600 !important;
+        }
+        
+        .goog-te-gadget-simple .goog-te-menu-value span {
+            color: #2c3e50 !important;
+            font-weight: 600 !important;
+        }
+        
+        .goog-te-gadget-simple .goog-te-menu-value span:hover {
+            color: #667eea !important;
+        }
+        
+        .goog-te-gadget-simple:hover {
+            border-color: #764ba2 !important;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2) !important;
+        }
+        
+        .goog-te-gadget-icon {
+            display: inline-block !important;
+            margin-right: 6px !important;
+            width: 16px !important;
+            height: 16px !important;
+        }
+        
+        .goog-te-menu {
+            background-color: white !important;
+            border: 2px solid #667eea !important;
+            border-radius: 8px !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        .goog-te-menu2 {
+            background-color: white !important;
+            border: none !important;
+        }
+        
+        .goog-te-menu-value {
+            color: #2c3e50 !important;
+            font-weight: 600 !important;
+        }
+        
+        .goog-te-menu-item {
+            color: #2c3e50 !important;
+            padding: 8px 12px !important;
+            font-family: 'Open Sans', sans-serif !important;
+        }
+        
+        .goog-te-menu-item:hover {
+            background-color: #f0f2ff !important;
+            color: #667eea !important;
+        }
+        
+        .goog-te-menu-item.goog-te-menu-value:hover {
+            background-color: #f0f2ff !important;
+        }
+
+        /* CSS Professionnel Global */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-link {
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: #667eea !important;
+        }
+
+        /* Main Content */
+        .main-content {
+            min-height: calc(100vh - 200px);
+            background-color: #f8f9fa;
+            padding: 20px 0;
+        }
+
+        /* Cards */
+        .card {
+            border: none;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1.25rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Tables */
+        .table {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-weight: 600;
+            padding: 1rem;
+        }
+
+        .table tbody tr {
+            border-bottom: 1px solid #e9ecef;
+            transition: background-color 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+        /* Buttons */
+        .btn {
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            padding: 0.5rem 1.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(17, 153, 142, 0.4);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(235, 51, 73, 0.4);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+            color: white;
+        }
+
+        /* Alerts */
+        .alert {
+            border: none;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+
+        /* Forms */
+        .form-control, .form-select {
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Badges */
+        .badge {
+            padding: 0.5rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer a {
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #667eea !important;
+        }
+
+        /* Spacing utilities */
+        .spacing-lg {
+            margin-bottom: 2rem;
+        }
+
+        .spacing-md {
+            margin-bottom: 1.5rem;
+        }
+
+        .spacing-sm {
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.25rem;
+            }
+
+            .card {
+                margin-bottom: 1rem;
+            }
+
+            .btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                Thot Platform
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Home")">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Cours")">Cours</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Question")">Questions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Tuteur")">Tuteurs</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <div id="google_translate_element" style="display: inline-block; margin-right: 15px;"></div>
+                    </li>
+                    @if (Session["UserId"] != null)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                @Session["NomComplet"]
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                @if (Session["UserType"]?.ToString() == "Etudiant")
+                                {
+                                    <li><a class="dropdown-item" href="@Url.Action("Index", "Etudiant")">Mon tableau de bord</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("MesCours", "Etudiant")">Mes cours</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("MesQuestions", "Etudiant")">Mes questions</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Index", "RencontrePhysique")">Mes rencontres</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Index", "Message")">Messagerie</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("MonAbonnement", "Etudiant")">Mon abonnement</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Profil", "Etudiant")">Mon profil</a></li>
+                                }
+                                else if (Session["UserType"]?.ToString() == "Tuteur")
+                                {
+                                    <li><a class="dropdown-item" href="@Url.Action("Index", "Tuteur")">Mon tableau de bord</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("MesCours", "Tuteur")">Mes cours</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("MesEtudiants", "Tuteur")">Mes etudiants</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("QuestionsEnAttente", "Tuteur")">Questions en attente</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("MesReponses", "Tuteur")">Mes reponses</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Index", "RencontrePhysique")">Mes rencontres</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Disponibilite", "Tuteur")">Disponibilite</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Profil", "Tuteur")">Mon profil</a></li>
+                                }
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Logout", "Account")">Deconnexion</a></li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Login", "Account")">Connexion</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Register", "Account")">Inscription</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container-fluid px-4 py-4">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                    <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                    <i class="bi bi-exclamation-circle"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            
+            @RenderBody()
+
+            <!-- Footer integre au contenu -->
+            <footer class="bg-dark text-white mt-5 py-4">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Plateforme Thot</h5>
+                            <p>Votre partenaire pour la reussite academique</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Liens rapides</h5>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="text-white">a propos</a></li>
+                                <li><a href="#" class="text-white">Contact</a></li>
+                                <li><a href="#" class="text-white">FAQ</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Contact</h5>
+                            <p>Email: info@thotplatform.com<br>
+                            Telephone: 514-555-THOT</p>
+                        </div>
+                    </div>
+                    <hr class="bg-white">
+                    <p class="text-center mb-0">&copy; @DateTime.Now.Year - Plateforme Thot - Tous droits reserves</p>
+                </div>
+            </footer>
+        </div>
+    </main>
+
+    @Scripts.Render("~/bundles/jquery")
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+

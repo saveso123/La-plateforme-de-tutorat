@@ -1,0 +1,165 @@
+@model ThotPlatform.ViewModels.CoursDetailsViewModel
+
+@{
+    ViewBag.Title = Model.Nom;
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", "Cours")" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour aux cours
+    </a>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-8">
+        @if (!string.IsNullOrEmpty(Model.ImageCouverture))
+        {
+            <img src="@Url.Content(Model.ImageCouverture)" class="img-fluid rounded mb-4" alt="@Model.Nom" style="width: 100%; max-height: 400px; object-fit: cover;">
+        }
+
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h2>@Model.Nom</h2>
+                <p class="lead">@Model.Description</p>
+                
+                <hr />
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong> Enseignant :</strong> @Model.TuteurNomComplet</p>
+                        <p><strong> Domaine :</strong> @Model.DomaineNom</p>
+                        <p><strong> Niveau :</strong> @Model.Niveau</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong> Modules :</strong> @Model.NombreModules</p>
+                        <p><strong> Dure estime :</strong> @Model.DureeEstimeeHeures heures</p>
+                        <p><strong> Inscrits :</strong> @Model.NombreInscrits tudiants</p>
+                    </div>
+                </div>
+
+                @if (Model.TuteurNoteMoyenne > 0)
+                {
+                    <div class="mb-3">
+                        <span class="badge bg-warning text-dark fs-5"> @Model.TuteurNoteMoyenne.ToString("F1") / 5</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="mb-0"> Contenu du cours</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    Ce cours contient <strong>@Model.NombreModules modules</strong> qui seront disponibles apres votre inscription.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow mb-3">
+            <div class="card-body">
+                @if (Session["UserType"]?.ToString() == "Etudiant")
+                {
+                    if (Model.EstInscrit)
+                    {
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle"></i> Vous etes inscrit a ce cours
+                        </div>
+                        <a href="@Url.Action("VoirCours", "Etudiant", new { id = Model.CoursId })" class="btn btn-primary w-100 mb-2">
+                            <i class="bi bi-play-circle"></i> Acceder au cours
+                        </a>
+                        <button type="button" class="btn btn-outline-danger w-100" onclick="desinscrireCours(@Model.CoursId)">
+                            <i class="bi bi-x-circle"></i> Se desinscrire
+                        </button>
+                    }
+                    else
+                    {
+                        <h5 class="text-center mb-3">Gratuit</h5>
+                        <button type="button" class="btn btn-success w-100 btn-lg" onclick="inscrireCours(@Model.CoursId)">
+                            <i class="bi bi-check-circle"></i> S'inscrire maintenant
+                        </button>
+                    }
+                }
+                else if (Session["UserType"]?.ToString() == "Tuteur")
+                {
+                    <a href="@Url.Action("Edit", "Cours", new { id = Model.CoursId })" class="btn btn-primary w-100 mb-2">
+                        <i class="bi bi-pencil"></i> Modifier le cours
+                    </a>
+                    <a href="@Url.Action("Create", "Module", new { coursId = Model.CoursId })" class="btn btn-success w-100 mb-2">
+                        <i class="bi bi-plus-circle"></i> Ajouter un module
+                    </a>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        Connectez-vous pour vous inscrire
+                    </div>
+                    <a href="@Url.Action("Login", "Account")" class="btn btn-primary w-100">
+                        Se connecter
+                    </a>
+                }
+            </div>
+        </div>
+
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                <h6 class="mb-0"> Ce que vous allez apprendre</h6>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li>Concepts thoriques</li>
+                    <li>Dmonstrations pratiques</li>
+                    <li>Exercices corrigs</li>
+                    <li>Quiz d'valuation</li>
+                    <li>Ressources tlchargeables</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="mb-0"> Informations</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>Code :</strong> @Model.Code</p>
+                <p><strong>Cr le :</strong> @Model.DateCreation.ToString("dd/MM/yyyy")</p>
+                <p><strong>Nombre d'inscrits :</strong> @Model.NombreInscrits</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function inscrireCours(coursId) {
+            if (confirm('Voulez-vous vous inscrire a ce cours ?')) {
+                $.post('@Url.Action("Inscrire", "Cours")', { id: coursId }, function(data) {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                });
+            }
+        }
+
+        function desinscrireCours(coursId) {
+            if (confirm('etes-vous sur de vouloir vous desinscrire de ce cours ?')) {
+                $.post('@Url.Action("Desinscrire", "Cours")', { id: coursId }, function(data) {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                });
+            }
+        }
+    </script>
+}
+
+

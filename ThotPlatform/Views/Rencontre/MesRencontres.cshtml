@@ -1,0 +1,161 @@
+﻿@model IEnumerable<ThotPlatform.Models.RencontrePhysique>
+
+@{
+    ViewBag.Title = "Mes Rencontres Physiques";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Mes Rencontres Physiques</h2>
+            <p class="text-muted">Gestion de vos rencontres en personne avec les tuteurs</p>
+        </div>
+        @if (Session["UserType"]?.ToString() == "Etudiant")
+        {
+            <div class="col-md-4 text-end">
+                <a href="@Url.Action("Reserver", "Rencontre")" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Reserver une Rencontre
+                </a>
+            </div>
+        }
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var rencontre in Model)
+            {
+                <div class="col-md-6 mb-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header @(rencontre.Statut == ThotPlatform.Models.StatutRencontre.Confirmee ? "bg-success" : rencontre.Statut == ThotPlatform.Models.StatutRencontre.Terminee ? "bg-info" : rencontre.Statut == ThotPlatform.Models.StatutRencontre.Annulee ? "bg-danger" : "bg-warning") text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-geo-alt"></i>
+                                @rencontre.Domaine.Nom
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Tuteur :</strong> @rencontre.Tuteur.Prenom @rencontre.Tuteur.Nom</p>
+                            <p><strong>Date :</strong> @rencontre.DateHeure.ToString("dd/MM/yyyy HH:mm")</p>
+                            <p><strong>Lieu :</strong> @rencontre.Lieu</p>
+                            <p><strong>Duree :</strong> @rencontre.DureeHeures heure(s)</p>
+                            <p><strong>Tarif :</strong> @rencontre.Tarif.ToString("C") @(rencontre.TarifPreferentiel ? "<span class=\"badge bg-success\">Tarif Preferentiel</span>" : "")</p>
+                            <p><strong>Cout Total :</strong> <strong>@rencontre.CoutTotal.ToString("C")</strong></p>
+                            <p><strong>Statut :</strong> 
+                                <span class="badge @(rencontre.Statut == ThotPlatform.Models.StatutRencontre.Confirmee ? "bg-success" : rencontre.Statut == ThotPlatform.Models.StatutRencontre.Terminee ? "bg-info" : rencontre.Statut == ThotPlatform.Models.StatutRencontre.Annulee ? "bg-danger" : "bg-warning")">
+                                    @rencontre.Statut
+                                </span>
+                            </p>
+
+                            @if (!string.IsNullOrEmpty(rencontre.Description))
+                            {
+                                <p><strong>Description :</strong> @rencontre.Description</p>
+                            }
+
+                            @if (rencontre.NoteEtudiant.HasValue)
+                            {
+                                <p><strong>Note :</strong> 
+                                    @for (int i = 0; i < rencontre.NoteEtudiant.Value; i++)
+                                    {
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    }
+                                </p>
+                            }
+                        </div>
+                        <div class="card-footer">
+                            @if (rencontre.Statut == ThotPlatform.Models.StatutRencontre.EnAttente && Session["UserType"]?.ToString() == "Tuteur")
+                            {
+                                <form method="post" action="@Url.Action("Confirmer", "Rencontre")" style="display: inline;">
+                                    <input type="hidden" name="id" value="@rencontre.RencontreId" />
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="bi bi-check-circle"></i> Confirmer
+                                    </button>
+                                </form>
+                            }
+
+                            @if (rencontre.Statut == ThotPlatform.Models.StatutRencontre.Confirmee && Session["UserType"]?.ToString() == "Tuteur")
+                            {
+                                <form method="post" action="@Url.Action("Terminer", "Rencontre")" style="display: inline;">
+                                    <input type="hidden" name="id" value="@rencontre.RencontreId" />
+                                    <button type="submit" class="btn btn-info btn-sm">
+                                        <i class="bi bi-check-all"></i> Terminer
+                                    </button>
+                                </form>
+                            }
+
+                            @if (rencontre.Statut == ThotPlatform.Models.StatutRencontre.Terminee && rencontre.NoteEtudiant == null && Session["UserType"]?.ToString() == "Etudiant")
+                            {
+                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#evalModal@rencontre.RencontreId">
+                                    <i class="bi bi-star"></i> evaluer
+                                </button>
+                            }
+
+                            @if (rencontre.Statut != ThotPlatform.Models.StatutRencontre.Terminee && rencontre.Statut != ThotPlatform.Models.StatutRencontre.Annulee)
+                            {
+                                <form method="post" action="@Url.Action("Annuler", "Rencontre")" style="display: inline;">
+                                    <input type="hidden" name="id" value="@rencontre.RencontreId" />
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('etes-vous sur ?')">
+                                        <i class="bi bi-x-circle"></i> Annuler
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal d'evaluation -->
+                @if (rencontre.Statut == ThotPlatform.Models.StatutRencontre.Terminee && rencontre.NoteEtudiant == null)
+                {
+                    <div class="modal fade" id="evalModal@rencontre.RencontreId" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">evaluer la Rencontre</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form method="post" action="@Url.Action("Evaluer", "Rencontre")">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="id" value="@rencontre.RencontreId" />
+                                        <div class="mb-3">
+                                            <label class="form-label">Note (1-5)</label>
+                                            <select name="note" class="form-select" required>
+                                                <option value="">Selectionner une note</option>
+                                                <option value="1">1 - Tres mauvais</option>
+                                                <option value="2">2 - Mauvais</option>
+                                                <option value="3">3 - Moyen</option>
+                                                <option value="4">4 - Bon</option>
+                                                <option value="5">5 - Excellent</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Commentaire</label>
+                                            <textarea name="commentaire" class="form-control" rows="3" placeholder="Votre avis..."></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                        <button type="submit" class="btn btn-primary">Soumettre</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h5>Aucune rencontre</h5>
+            <p class="mb-0">Vous n'avez pas encore de rencontres physiques.</p>
+        </div>
+    }
+
+    <div class="text-center mt-4">
+        <a href="@Url.Action("Index", "Etudiant")" class="btn btn-outline-secondary">Retour au tableau de bord</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+}

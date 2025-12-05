@@ -1,0 +1,219 @@
+@model ThotPlatform.Models.Quiz
+
+@{
+    ViewBag.Title = "Details du Quiz";
+}
+
+<div class="mb-3 d-flex justify-content-between align-items-center">
+    <div>
+        <a href="@Url.Action("Index", "Quiz")" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Retour aux quiz
+        </a>
+    </div>
+    <div>
+        <a href="@Url.Action("AddQuestion", "Quiz", new { quizId = Model.QuizId })" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Ajouter une question
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2>@Model.Titre</h2>
+        <p class="text-muted">Module : @Model.Module.Titre | Cours : @Model.Module.Cours.Nom</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Informations du Quiz</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Description :</strong></p>
+                <p>@Model.Description</p>
+                <hr />
+                <p><strong>Duree limite :</strong> @(Model.DureeLimiteMinutes.HasValue ? Model.DureeLimiteMinutes + " minutes" : "Illimitee")</p>
+                <p><strong>Note de passage :</strong> @Model.NotePassage%</p>
+                <p><strong>Tentatives autorisees :</strong> @Model.NombreTentativesAutorisees</p>
+                <p><strong>Ordre aleatoire :</strong> @(Model.OrdreAleatoire ? "Oui" : "Non")</p>
+                <p><strong>Afficher les reponses :</strong> @(Model.AfficherReponses ? "Oui" : "Non")</p>
+                <p>
+                    <strong>Statut :</strong>
+                    @if (Model.EstPublie)
+                    {
+                        <span class="badge bg-success">Publie</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning">Brouillon</span>
+                    }
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Statistiques</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Nombre de questions :</strong> @Model.Questions.Count</p>
+                <p><strong>Points totaux :</strong> @Model.Questions.Sum(q => q.Points)</p>
+                <p><strong>Tentatives passees :</strong> @Model.Tentatives.Count</p>
+                <p><strong>Tentatives reussies :</strong> @Model.Tentatives.Count(t => t.EstReussie)</p>
+                <p><strong>Taux de reussite :</strong> 
+                    @if (Model.Tentatives.Count > 0)
+                    {
+                        @((Model.Tentatives.Count(t => t.EstReussie) * 100 / Model.Tentatives.Count) + "%")
+                    }
+                    else
+                    {
+                        <span class="text-muted">N/A</span>
+                    }
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="bi bi-question-circle"></i> Questions (@Model.Questions.Count)</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.Questions.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var question in Model.Questions.OrderBy(q => q.Ordre))
+                        {
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">@question.Ordre. @question.Texte</h6>
+                                        <small class="text-muted">@question.Choix.Count choix | @question.Points point@(question.Points > 1 ? "s" : "")</small>
+                                    </div>
+                                    <div>
+                                        <a href="@Url.Action("EditQuestion", "Quiz", new { questionId = question.QuestionQuizId })" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-pencil"></i> Modifier
+                                        </a>
+                                        <a href="@Url.Action("DeleteQuestion", "Quiz", new { questionId = question.QuestionQuizId })" class="btn btn-sm btn-danger" onclick="return confirm('Etes-vous sur?')">
+                                            <i class="bi bi-trash"></i> Supprimer
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">Aucune question pour le moment. Cliquez sur "Ajouter une question" pour en creer.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Tentatives des etudiants</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.Tentatives.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>etudiant</th>
+                                    <th>Date</th>
+                                    <th>Duree</th>
+                                    <th>Note</th>
+                                    <th>Statut</th>
+                                    <th>Correction</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var tentative in Model.Tentatives.OrderByDescending(t => t.DateDebut))
+                                {
+                                    <tr>
+                                        <td>@(tentative.Etudiant != null ? tentative.Etudiant.Prenom + " " + tentative.Etudiant.Nom : "Etudiant inconnu")</td>
+                                        <td>@tentative.DateDebut.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>
+                                            @if (tentative.Duree.HasValue)
+                                            {
+                                                @((int)tentative.Duree.Value.TotalMinutes + " min")
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (tentative.EstCompletee && tentative.NoteObtenue.HasValue)
+                                            {
+                                                <strong>@tentative.NoteObtenue%</strong>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (!tentative.EstCompletee)
+                                            {
+                                                <span class="badge bg-warning">En cours</span>
+                                            }
+                                            else if (tentative.EstReussie)
+                                            {
+                                                <span class="badge bg-success">Reussie</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">echouee</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (tentative.EstCompletee)
+                                            {
+                                                if (tentative.EstCorrigee)
+                                                {
+                                                    <span class="badge bg-success">✓ Corrigee</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-warning">a corriger</span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (tentative.EstCompletee)
+                                            {
+                                                <a href="@Url.Action("CorrigerTentative", "Quiz", new { id = tentative.TentativeId })" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-pencil"></i> Corriger
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">Aucune tentative pour ce quiz.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,171 @@
+﻿@model ThotPlatform.ViewModels.CoursDetailsViewModel
+
+@{
+    ViewBag.Title = Model.Nom;
+}
+
+<div class="container mt-4">
+    <a href="@Url.Action("MesCours", "Tuteur")" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Retour a mes cours
+    </a>
+
+    <div class="row">
+        <!-- Informations du cours -->
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">@Model.Nom</h3>
+                </div>
+                <div class="card-body">
+                    <p><strong>Code :</strong> @Model.Code</p>
+                    <p><strong>Description :</strong> @Model.Description</p>
+                    <p><strong>Domaine :</strong> @Model.DomaineNom</p>
+                    <p><strong>Niveau :</strong> @Model.Niveau</p>
+                    <p><strong>Duree estimee :</strong> @Model.DureeEstimeeHeures heures</p>
+                    <p><strong>Nombre d'inscrits :</strong> @Model.NombreInscrits</p>
+                    <p>
+                        @if (Model.EstPublie)
+                        {
+                            <span class="badge bg-success">Publie</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning">Non publie</span>
+                        }
+                    </p>
+                </div>
+            </div>
+
+            <!-- Modules -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Modules (@Model.NombreModules)</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    @{
+                        var modules = ViewBag.Modules as List<ThotPlatform.Models.Module>;
+                        if (modules != null && modules.Count > 0)
+                        {
+                            foreach (var module in modules.OrderBy(m => m.Ordre))
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">Module @module.Ordre - @module.Titre</h6>
+                                            <small class="text-muted">@module.Description</small>
+                                            <br />
+                                            <small class="text-muted"><i class="bi bi-clock"></i> @module.DureeMinutes min</small>
+                                        </div>
+                                        <div>
+                                            <a href="@Url.Action("Edit", "Module", new { id = module.ModuleId })" class="btn btn-sm btn-primary">
+                                                <i class="bi bi-pencil"></i> Modifier
+                                            </a>
+                                            <a href="@Url.Action("Delete", "Module", new { id = module.ModuleId })" class="btn btn-sm btn-danger" onclick="return confirm('Etes-vous sur de vouloir supprimer ce module?')">
+                                                <i class="bi bi-trash"></i> Supprimer
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="p-3 text-muted">Aucun module pour le moment. Cliquez sur "Ajouter un module" pour en creer.</p>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- Quiz -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-question-circle"></i> Quiz</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    @{
+                        var allQuiz = ViewBag.Modules as List<ThotPlatform.Models.Module>;
+                        var quizList = new List<ThotPlatform.Models.Quiz>();
+                        if (allQuiz != null)
+                        {
+                            foreach (var mod in allQuiz)
+                            {
+                                if (mod.Quiz != null)
+                                {
+                                    quizList.AddRange(mod.Quiz);
+                                }
+                            }
+                        }
+                        
+                        if (quizList.Count > 0)
+                        {
+                            foreach (var quiz in quizList.OrderBy(q => q.Titre))
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">@quiz.Titre</h6>
+                                            <small class="text-muted">@quiz.Description</small>
+                                            <br />
+                                            <small class="text-muted">
+                                                <i class="bi bi-question"></i> @quiz.Questions.Count questions | 
+                                                <i class="bi bi-percent"></i> Note passage: @quiz.NotePassage%
+                                            </small>
+                                        </div>
+                                        <div>
+                                            <a href="@Url.Action("Details", "Quiz", new { id = quiz.QuizId })" class="btn btn-sm btn-info">
+                                                <i class="bi bi-eye"></i> Voir
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="p-3 text-muted">Aucun quiz pour le moment.</p>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">Actions</h6>
+                </div>
+                <div class="card-body">
+                    <a href="@Url.Action("EtudiantsInscrits", "Tuteur", new { id = Model.CoursId })" class="btn btn-info w-100 mb-2">
+                        <i class="bi bi-people"></i> Voir les etudiants (@Model.NombreInscrits)
+                    </a>
+                    <a href="@Url.Action("Edit", "Cours", new { id = Model.CoursId })" class="btn btn-primary w-100 mb-2">
+                        <i class="bi bi-pencil"></i> Modifier le cours
+                    </a>
+                    <a href="@Url.Action("Create", "Module", new { coursId = Model.CoursId })" class="btn btn-success w-100 mb-2">
+                        <i class="bi bi-plus"></i> Ajouter un module
+                    </a>
+                    <a href="@Url.Action("Index", "Quiz")" class="btn btn-warning w-100 mb-2">
+                        <i class="bi bi-question-circle"></i> Gerer les quiz
+                    </a>
+                    <a href="@Url.Action("Delete", "Cours", new { id = Model.CoursId })" class="btn btn-danger w-100" onclick="return confirm('Etes-vous sur?')">
+                        <i class="bi bi-trash"></i> Supprimer le cours
+                    </a>
+                </div>
+            </div>
+
+            <!-- Informations tuteur -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h6 class="mb-0">Tuteur</h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>@Model.TuteurNomComplet</strong></p>
+                    <p class="text-muted">@Model.TuteurEmail</p>
+                    <p><strong>Note moyenne :</strong> @Model.TuteurNoteMoyenne/5</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,97 @@
+@{
+    ViewBag.Title = "Session immdiate";
+    var montant = ViewBag.Montant;
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", "Etudiant")" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour au tableau de bord
+    </a>
+</div>
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+        <div class="card shadow-lg">
+            <div class="card-header bg-success text-white text-center py-4">
+                <h2 class="mb-0"> Session Immdiate</h2>
+            </div>
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <h1 class="display-3 text-success">@montant $</h1>
+                    <p class="text-muted">pour 1 heure</p>
+                </div>
+
+                <div class="alert alert-success">
+                    <h5> Session prioritaire et immdiate</h5>
+                    <p class="mb-0">Connexion instantane avec un tuteur disponible dans le domaine de votre choix</p>
+                </div>
+
+                <div class="mb-4">
+                    <h5> Ce qui est inclus :</h5>
+                    <ul>
+                        <li> <strong>Clavardage en direct</strong> pendant 1 heure</li>
+                        <li> <strong>Connexion immediate</strong> avec un tuteur</li>
+                        <li> <strong>Aide personnalisee</strong> sur votre probleme</li>
+                        <li> <strong>Explications detaillees</strong> en temps reel</li>
+                        <li> <strong>Partage de fichiers</strong> et documents</li>
+                    </ul>
+                </div>
+
+                @using (Html.BeginForm("CreateSessionImmediate", "Payment", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Selectionnez le domaine</label>
+                        @Html.DropDownList("domaineId", (SelectList)ViewBag.Domaines, "Choisissez un domaine", new { @class = "form-select form-select-lg" })
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg py-3">
+                            <i class="bi bi-lightning"></i> Dmarrer une session maintenant
+                        </button>
+                    </div>
+                }
+
+                <div class="text-center mt-3">
+                    <small class="text-muted">
+                        Paiement scuris via PayPal  Connexion immdiate aprs paiement
+                    </small>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <strong> 1 heure</strong><br />
+                        <small class="text-muted">de session</small>
+                    </div>
+                    <div class="col-4">
+                        <strong> Immdiat</strong><br />
+                        <small class="text-muted">connexion</small>
+                    </div>
+                    <div class="col-4">
+                        <strong> 5$</strong><br />
+                        <small class="text-muted">prix fixe</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h6> Bon  savoir</h6>
+                <ul class="mb-0">
+                    <li>Idal pour une aide urgente avant un examen</li>
+                    <li>Tuteur ddi pendant toute la session</li>
+                    <li>Historique de conversation sauvegard</li>
+                    <li>Possibilit de prolonger la session</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="@Url.Action("Index", "Home")" class="text-muted"> Retour  l'accueil</a>
+        </div>
+    </div>
+</div>
+

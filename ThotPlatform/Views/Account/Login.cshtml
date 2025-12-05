@@ -1,0 +1,75 @@
+@model ThotPlatform.ViewModels.LoginViewModel
+
+@{
+    ViewBag.Title = "Connexion";
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour a l'accueil
+    </a>
+</div>
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Connexion</h3>
+            </div>
+            <div class="card-body p-4">
+                @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+                {
+                    @Html.AntiForgeryToken()
+                    
+                    <div class="form-text mb-3">
+                        Connectez-vous pour acceder a votre compte
+                    </div>
+
+                    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Username, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Votre nom d'utilisateur", autofocus = "autofocus" })
+                        @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Votre mot de passe" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input" })
+                        @Html.LabelFor(m => m.RememberMe, new { @class = "form-check-label" })
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-box-arrow-in-right"></i> Se connecter
+                        </button>
+                    </div>
+                }
+            </div>
+            <div class="card-footer text-center">
+                <p class="mb-0">
+                    Pas encore de compte ? 
+                    <a href="@Url.Action("Register", "Account")" class="fw-bold">Inscrivez-vous ici</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <small class="text-muted">
+                <strong>Comptes de test :</strong><br>
+                Etudiant : jean.tremblay / Etudiant123!<br>
+                Tuteur : marie.durand / Tuteur123!
+            </small>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

@@ -1,0 +1,91 @@
+﻿@model ThotPlatform.Models.RencontrePhysique
+
+@{
+    ViewBag.Title = "Reserver une Rencontre Physique";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="bi bi-geo-alt"></i> Reserver une Rencontre Physique</h3>
+                </div>
+                <div class="card-body p-4">
+                    @using (Html.BeginForm("Reserver", "Rencontre", FormMethod.Post, new { @class = "needs-validation" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                @Html.LabelFor(m => m.DomaineId, new { @class = "form-label" })
+                                @Html.DropDownListFor(m => m.DomaineId, ViewBag.Domaines as SelectList, "Selectionner un domaine", new { @class = "form-select" })
+                                @Html.ValidationMessageFor(m => m.DomaineId, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                @Html.LabelFor(m => m.TuteurId, new { @class = "form-label" })
+                                @Html.DropDownListFor(m => m.TuteurId, ViewBag.Tuteurs as SelectList, "Selectionner un tuteur", new { @class = "form-select" })
+                                @Html.ValidationMessageFor(m => m.TuteurId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                @Html.LabelFor(m => m.DateHeure, new { @class = "form-label" })
+                                @Html.TextBoxFor(m => m.DateHeure, new { @class = "form-control", @type = "datetime-local" })
+                                @Html.ValidationMessageFor(m => m.DateHeure, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                @Html.LabelFor(m => m.DureeHeures, new { @class = "form-label" })
+                                @Html.TextBoxFor(m => m.DureeHeures, new { @class = "form-control", @type = "number", @step = "0.5", @min = "0.5", @max = "8" })
+                                @Html.ValidationMessageFor(m => m.DureeHeures, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Lieu, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Lieu, new { @class = "form-control", @placeholder = "Ex: Bibliotheque municipale, Cafe..." })
+                            @Html.ValidationMessageFor(m => m.Lieu, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Tarif, new { @class = "form-label" })
+                            <div class="input-group">
+                                @Html.TextBoxFor(m => m.Tarif, new { @class = "form-control", @type = "number", @step = "0.01", @min = "0" })
+                                <span class="input-group-text">$/heure</span>
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Tarif, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Description, new { @class = "form-label" })
+                            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", @rows = "4", @placeholder = "Decrivez les objectifs de la rencontre..." })
+                            @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+                        </div>
+
+                        @if (ViewBag.TarifPreferentiel)
+                        {
+                            <div class="alert alert-success">
+                                <i class="bi bi-star"></i> <strong>Tarif Preferentiel :</strong> Vous beneficiez d'une reduction de 20% car vous etes abonne !
+                            </div>
+                        }
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> Reserver la Rencontre
+                            </button>
+                            <a href="@Url.Action("MesRencontres", "Rencontre")" class="btn btn-outline-secondary">Annuler</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

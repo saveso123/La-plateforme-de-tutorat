@@ -1,0 +1,153 @@
+@{
+    ViewBag.Title = "Messagerie";
+    var messagesRecus = (List<ThotPlatform.Models.Message>)ViewBag.MessagesRecus;
+    var messagesEnvoyes = (List<ThotPlatform.Models.Message>)ViewBag.MessagesEnvoyes;
+    var nombreNonLus = (int)ViewBag.NombreNonLus;
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", Session["UserType"]?.ToString())" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour au tableau de bord
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2><i class="bi bi-envelope"></i> Messagerie</h2>
+        <p class="text-muted">Communiquez avec vos @(Session["UserType"]?.ToString() == "Etudiant" ? "tuteurs" : "etudiants")</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="@Url.Action("Nouveau", "Message")" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Nouveau message
+        </a>
+    </div>
+</div>
+
+<!-- Statistiques -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center bg-primary text-white">
+            <div class="card-body">
+                <h3>@messagesRecus.Count</h3>
+                <p class="mb-0">Messages recus</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center bg-warning text-dark">
+            <div class="card-body">
+                <h3>@nombreNonLus</h3>
+                <p class="mb-0">Non lus</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center bg-success text-white">
+            <div class="card-body">
+                <h3>@messagesEnvoyes.Count</h3>
+                <p class="mb-0">Messages envoyes</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Onglets -->
+<ul class="nav nav-tabs mb-3" id="messageTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="recus-tab" data-bs-toggle="tab" data-bs-target="#recus" type="button">
+            <i class="bi bi-inbox"></i> Recus
+            @if (nombreNonLus > 0)
+            {
+                <span class="badge bg-danger">@nombreNonLus</span>
+            }
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="envoyes-tab" data-bs-toggle="tab" data-bs-target="#envoyes" type="button">
+            <i class="bi bi-send"></i> Envoyes
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="messageTabContent">
+    <!-- Messages recus -->
+    <div class="tab-pane fade show active" id="recus" role="tabpanel">
+        @if (messagesRecus.Any())
+        {
+            <div class="list-group">
+                @foreach (var message in messagesRecus)
+                {
+                    <a href="@Url.Action("Lire", "Message", new { id = message.MessageId })" 
+                       class="list-group-item list-group-item-action @(!message.EstLu ? "list-group-item-warning" : "")">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1 @(!message.EstLu ? "fw-bold" : "")">
+                                @if (!message.EstLu)
+                                {
+                                    <i class="bi bi-envelope-fill text-warning"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-envelope-open"></i>
+                                }
+                                @message.Sujet
+                            </h6>
+                            <small class="text-muted">@message.DateEnvoi.ToString("dd/MM/yyyy HH:mm")</small>
+                        </div>
+                        <p class="mb-1 text-muted">
+                            <strong>De:</strong> @(message.Expediteur != null ? message.Expediteur.NomComplet : "Expediteur inconnu")
+                        </p>
+                        <small class="text-muted">
+                            @(message.Contenu.Length > 100 ? message.Contenu.Substring(0, 100) + "..." : message.Contenu)
+                        </small>
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> Aucun message recu
+            </div>
+        }
+    </div>
+
+    <!-- Messages envoyes -->
+    <div class="tab-pane fade" id="envoyes" role="tabpanel">
+        @if (messagesEnvoyes.Any())
+        {
+            <div class="list-group">
+                @foreach (var message in messagesEnvoyes)
+                {
+                    <a href="@Url.Action("Lire", "Message", new { id = message.MessageId })" 
+                       class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">
+                                <i class="bi bi-send"></i> @message.Sujet
+                            </h6>
+                            <small class="text-muted">@message.DateEnvoi.ToString("dd/MM/yyyy HH:mm")</small>
+                        </div>
+                        <p class="mb-1 text-muted">
+                            <strong>a:</strong> @(message.Destinataire != null ? message.Destinataire.NomComplet : "Destinataire inconnu")
+                            @if (message.EstLu)
+                            {
+                                <span class="badge bg-success ms-2">
+                                    <i class="bi bi-check2-all"></i> Lu
+                                </span>
+                            }
+                        </p>
+                        <small class="text-muted">
+                            @(message.Contenu.Length > 100 ? message.Contenu.Substring(0, 100) + "..." : message.Contenu)
+                        </small>
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> Aucun message envoye
+            </div>
+        }
+    </div>
+</div>
+

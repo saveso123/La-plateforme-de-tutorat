@@ -1,0 +1,97 @@
+@model ThotPlatform.Models.Etudiant
+
+@{
+    ViewBag.Title = "Mon Profil";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Mon Profil</h3>
+            </div>
+            <div class="card-body p-4">
+                @using (Html.BeginForm("UpdateProfil", "Etudiant", FormMethod.Post, new { @class = "needs-validation" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.Nom, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Nom, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Nom, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.Prenom, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Prenom, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Prenom, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @readonly = "readonly" })
+                        <small class="text-muted">L'email ne peut pas etre modifie</small>
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Telephone, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Telephone, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Telephone, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.Niveau, new { @class = "form-label" })
+                            @Html.EnumDropDownListFor(m => m.Niveau, "Selectionnez un niveau", new { @class = "form-select" })
+                            @Html.ValidationMessageFor(m => m.Niveau, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(m => m.Ville, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Ville, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Ville, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Etablissement, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Etablissement, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Etablissement, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Enregistrer les modifications
+                        </button>
+                        <a href="@Url.Action("Index", "Etudiant")" class="btn btn-outline-secondary">Annuler</a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-body">
+                <h6>Informations sur le compte</h6>
+                <p><strong>Identifiant unique :</strong> <span class="badge bg-primary">@Model.IdentifiantUnique</span></p>
+                <p><strong>Date d'inscription :</strong> @Model.DateInscription.ToString("dd/MM/yyyy")</p>
+                @if (Model.AbonnementActif)
+                {
+                    <p><strong>Abonnement :</strong> Actif jusqu'au @Model.DateFinAbonnement?.ToString("dd/MM/yyyy")</p>
+                }
+                else
+                {
+                    <p><strong>Abonnement :</strong> Non actif</p>
+                }
+                <a href="@Url.Action("ChangePassword", "Account")" class="btn btn-sm btn-warning">Changer mon mot de passe</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

@@ -1,0 +1,164 @@
+@model ThotPlatform.Models.Tuteur
+
+@{
+    ViewBag.Title = "Dashboard Tuteur";
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Retour a l'accueil
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2> Bienvenue, @Model.Prenom !</h2>
+        <p class="text-muted">Tableau de bord tuteur</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center bg-primary text-white">
+            <div class="card-body">
+                <h3>@ViewBag.NombreReponses</h3>
+                <p class="mb-0">Reponses donnees</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-success text-white">
+            <div class="card-body">
+                <h3>@ViewBag.NombreCours</h3>
+                <p class="mb-0">Cours crees</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-info text-white">
+            <div class="card-body">
+                <h3>@ViewBag.NombreSessions</h3>
+                <p class="mb-0">Sessions donnees</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-warning text-white">
+            <div class="card-body">
+                <h3>@ViewBag.NoteMoyenne.ToString("F2") </h3>
+                <p class="mb-0">Note moyenne</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"> Actions rapides</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="@Url.Action("QuestionsEnAttente", "Tuteur")" class="btn btn-outline-primary">
+                         Questions en attente
+                    </a>
+                    <a href="@Url.Action("Create", "Cours")" class="btn btn-outline-success">
+                         Crer un cours
+                    </a>
+                    <a href="@Url.Action("MesCours", "Tuteur")" class="btn btn-outline-info">
+                         Mes cours
+                    </a>
+                    <a href="@Url.Action("MesReponses", "Tuteur")" class="btn btn-outline-warning">
+                         Mes reponses
+                    </a>
+                    <a href="@Url.Action("Index", "Message")" class="btn btn-outline-secondary">
+                         Messagerie
+                    </a>
+                    <a href="@Url.Action("Index", "Quiz")" class="btn btn-outline-danger">
+                         Gerer les Quiz
+                    </a>
+                
+                    <a href="@Url.Action("Index", "RencontrePhysique")" class="btn btn-outline-success">
+                         <i class="bi bi-geo-alt"></i> Rencontres physiques
+                    </a>
+                    <a href="@Url.Action("Disponibilite", "Tuteur")" class="btn btn-outline-primary">
+                         <i class="bi bi-calendar-check"></i> Ma disponibilite
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"> Mon profil</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Nom complet :</strong> @Model.NomComplet</p>
+                <p><strong>Email :</strong> @Model.Email</p>
+                <p><strong>Exprience :</strong> @Model.AnneesExperience ans</p>
+                <p><strong>Diplmes :</strong> @Model.Diplomes</p>
+                <p><strong>valuations :</strong> @Model.NombreEvaluations</p>
+                <p><strong>Disponible :</strong> @(Model.EstDisponible ? " Oui" : " Non")</p>
+                <a href="@Url.Action("Profil", "Tuteur")" class="btn btn-outline-primary">Modifier mon profil</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-info">@ViewBag.NombreSessions</h3>
+                <p class="text-muted">Sessions de clavardage</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-success">@ViewBag.NombreRencontres</h3>
+                <p class="text-muted">Rencontres physiques</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-warning">@(Model.EstDisponible ? "✓" : "✗")</h3>
+                <p class="text-muted">Disponibilit</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-primary">@ViewBag.NombreCours</h3>
+                <p class="text-muted">Cours actifs</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"> Statistiques</h5>
+            </div>
+            <div class="card-body">
+                <p>Vous avez aid de nombreux tudiants  russir. Continuez votre excellent travail !</p>
+                @if (!string.IsNullOrEmpty(Model.Biographie))
+                {
+                    <hr />
+                    <h6>Biographie</h6>
+                    <p>@Model.Biographie</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

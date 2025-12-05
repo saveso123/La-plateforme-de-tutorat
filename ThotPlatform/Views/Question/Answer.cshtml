@@ -1,0 +1,65 @@
+@model ThotPlatform.Models.Reponse
+
+@{
+    ViewBag.Title = "Rpondre  une question";
+    var question = ViewBag.Question as ThotPlatform.Models.Question;
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"> Question</h5>
+            </div>
+            <div class="card-body">
+                <h5>@question.Titre</h5>
+                <p style="white-space: pre-wrap;">@question.Contenu</p>
+                <div class="text-muted">
+                    <small>Pose par @question.Etudiant.NomComplet le @question.DateCreation.ToString("dd/MM/yyyy HH:mm")</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0">Votre reponse</h3>
+            </div>
+            <div class="card-body p-4">
+                @using (Html.BeginForm("Answer", "Question", new { id = question.QuestionId }, FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation" }))
+                {
+                    @Html.AntiForgeryToken()
+                    
+                    <div class="alert alert-info">
+                        <strong>Conseil :</strong> Fournissez une reponse claire, detaillee et pedagogique.
+                    </div>
+
+                    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Contenu, "Votre reponse detaillee", new { @class = "form-label" })
+                        @Html.TextAreaFor(m => m.Contenu, new { @class = "form-control", rows = 8, placeholder = "Redigez votre reponse ici..." })
+                        @Html.ValidationMessageFor(m => m.Contenu, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Fichier joint (optionnel)</label>
+                        <input type="file" name="fichier" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
+                        <div class="form-text">Ajoutez un document, une image ou un schma explicatif</div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-send"></i> Publier ma reponse
+                        </button>
+                        <a href="@Url.Action("Details", "Question", new { id = question.QuestionId })" class="btn btn-outline-secondary">Annuler</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

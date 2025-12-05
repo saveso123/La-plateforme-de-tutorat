@@ -1,0 +1,82 @@
+﻿@model IEnumerable<ThotPlatform.Models.SessionClavardage>
+
+@{
+    ViewBag.Title = "Mes Sessions de Clavardage";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>Mes Sessions de Clavardage</h2>
+            <p class="text-muted">Historique de toutes vos sessions de clavardage</p>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var session in Model)
+            {
+                <div class="col-md-6 mb-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header @(session.Statut == ThotPlatform.Models.StatutSession.EnCours ? "bg-success" : session.Statut == ThotPlatform.Models.StatutSession.Terminee ? "bg-info" : "bg-warning") text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-chat-dots"></i>
+                                @session.Domaine.Nom
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Type :</strong> @session.Type</p>
+                            <p><strong>Statut :</strong> 
+                                <span class="badge @(session.Statut == ThotPlatform.Models.StatutSession.EnCours ? "bg-success" : session.Statut == ThotPlatform.Models.StatutSession.Terminee ? "bg-info" : "bg-warning")">
+                                    @session.Statut
+                                </span>
+                            </p>
+                            <p><strong>Date :</strong> @session.DateDebut.ToString("dd/MM/yyyy HH:mm")</p>
+                            @if (session.DateFin.HasValue)
+                            {
+                                <p><strong>Duree :</strong> @((int?)session.DureeReelle?.TotalMinutes ?? 0) minutes</p>
+                            }
+                            <p><strong>Cout :</strong> @session.Cout.ToString("C")</p>
+
+                            @if (session.NoteEtudiant.HasValue)
+                            {
+                                <p><strong>Note :</strong> 
+                                    @for (int i = 0; i < session.NoteEtudiant.Value; i++)
+                                    {
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    }
+                                </p>
+                            }
+                        </div>
+                        <div class="card-footer">
+                            <a href="@Url.Action("Session", "Chat", new { id = session.SessionId })" class="btn btn-primary btn-sm">
+                                <i class="bi bi-eye"></i> Voir
+                            </a>
+                            @if (session.Statut == ThotPlatform.Models.StatutSession.EnAttente)
+                            {
+                                <form method="post" action="@Url.Action("StartSession", "Chat")" style="display: inline;">
+                                    <input type="hidden" name="sessionId" value="@session.SessionId" />
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="bi bi-play-circle"></i> Demarrer
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h5>Aucune session</h5>
+            <p class="mb-0">Vous n'avez pas encore de sessions de clavardage.</p>
+        </div>
+    }
+
+    <div class="text-center mt-4">
+        <a href="@Url.Action("Index", "Etudiant")" class="btn btn-outline-secondary">Retour au tableau de bord</a>
+    </div>
+</div>

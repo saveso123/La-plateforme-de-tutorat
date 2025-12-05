@@ -1,0 +1,181 @@
+@model ThotPlatform.ViewModels.RencontrePhysiqueViewModel
+
+@{
+    ViewBag.Title = "Details de la Rencontre";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header @(Model.Statut == ThotPlatform.Models.StatutRencontre.Confirmee ? "bg-success" : Model.Statut == ThotPlatform.Models.StatutRencontre.Terminee ? "bg-info" : Model.Statut == ThotPlatform.Models.StatutRencontre.Annulee ? "bg-danger" : "bg-warning") text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-calendar-event"></i> Rencontre Physique
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6><strong>Etudiant</strong></h6>
+                            <p>@Model.EtudiantPrenom @Model.EtudiantNom</p>
+                            <p><a href="mailto:@Model.EtudiantEmail">@Model.EtudiantEmail</a></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><strong>Tuteur</strong></h6>
+                            <p>@Model.TuteurPrenom @Model.TuteurNom</p>
+                            <p><a href="mailto:@Model.TuteurEmail">@Model.TuteurEmail</a></p>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6><strong>Date et Heure</strong></h6>
+                            <p>@Model.DateHeure.ToString("dddd dd MMMM yyyy HH:mm")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><strong>Duree</strong></h6>
+                            <p>@Model.DureeHeures heure(s)</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6><strong>Domaine</strong></h6>
+                            <p>@Model.DomaineNom</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><strong>Lieu</strong></h6>
+                            <p>@Model.Lieu</p>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <h6><strong>Description</strong></h6>
+                                <p>@Model.Description</p>
+                            </div>
+                        </div>
+                    }
+
+                    <hr />
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6><strong>Tarif Horaire</strong></h6>
+                            <p>@Model.Tarif.ToString("C")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><strong>Cout Total</strong></h6>
+                            <p><strong class="text-primary">@Model.CoutTotal.ToString("C")</strong></p>
+                        </div>
+                    </div>
+
+                    @if (Model.TarifPreferentiel)
+                    {
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle"></i> <strong>Tarif Preferentiel Applique</strong> (-20%)
+                        </div>
+                    }
+
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h6><strong>Statut</strong></h6>
+                            <p>
+                                <span class="badge @(Model.Statut == ThotPlatform.Models.StatutRencontre.Confirmee ? "bg-success" : Model.Statut == ThotPlatform.Models.StatutRencontre.Terminee ? "bg-info" : Model.Statut == ThotPlatform.Models.StatutRencontre.Annulee ? "bg-danger" : "bg-warning") fs-6">
+                                    @Model.Statut
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    @if (Model.NoteEtudiant.HasValue)
+                    {
+                        <div class="alert alert-info">
+                            <strong>Evaluation :</strong> @Model.NoteEtudiant/5 ⭐
+                            @if (!string.IsNullOrEmpty(Model.Commentaire))
+                            {
+                                <p class="mt-2">@Model.Commentaire</p>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Actions</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Statut == ThotPlatform.Models.StatutRencontre.EnAttente)
+                    {
+                        <form method="post" action="@Url.Action("Annuler", "RencontrePhysique")" class="mb-2">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.RencontreId" />
+                            <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Etes-vous sur ?')">
+                                <i class="bi bi-x-circle"></i> Annuler
+                            </button>
+                        </form>
+                    }
+                    @if (Model.Statut == ThotPlatform.Models.StatutRencontre.Terminee && !Model.NoteEtudiant.HasValue)
+                    {
+                        <button type="button" class="btn btn-warning w-100" data-bs-toggle="modal" data-bs-target="#evaluerModal">
+                            <i class="bi bi-star"></i> Evaluer
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a href="javascript:history.back()" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Retour
+        </a>
+    </div>
+</div>
+
+<!-- Modal Evaluation -->
+<div class="modal fade" id="evaluerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Evaluer la Rencontre</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="@Url.Action("Noter", "RencontrePhysique")">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="@Model.RencontreId" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Note (1-5 etoiles)</strong></label>
+                        <select name="note" class="form-select" required>
+                            <option value="">-- Selectionnez une note --</option>
+                            <option value="1">1 ⭐ Mauvais</option>
+                            <option value="2">2 ⭐ Moyen</option>
+                            <option value="3">3 ⭐ Bon</option>
+                            <option value="4">4 ⭐ Tres Bon</option>
+                            <option value="5">5 ⭐ Excellent</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Commentaire (optionnel)</strong></label>
+                        <textarea name="commentaire" class="form-control" rows="3" placeholder="Partagez votre avis..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Envoyer Evaluation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
